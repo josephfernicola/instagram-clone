@@ -8,6 +8,7 @@ import SignUp from "./SignUp";
 
 const RouteSwitch = () => {
   const [homePageSidebar, setHomePageSidebar] = useState("");
+  const [username, setUsername] = useState("");
 
   return (
     <BrowserRouter>
@@ -19,6 +20,8 @@ const RouteSwitch = () => {
             <Home
               homePageSidebar={homePageSidebar}
               setHomePageSidebar={setHomePageSidebar}
+              username={username}
+              setUsername={setUsername}
             />
           }
         />
@@ -28,6 +31,8 @@ const RouteSwitch = () => {
             <SignUp
               homePageSidebar={homePageSidebar}
               setHomePageSidebar={setHomePageSidebar}
+              username={username}
+              setUsername={setUsername}
             />
           }
         />

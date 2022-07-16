@@ -16,20 +16,72 @@ import {
   onAuthStateChanged,
   deleteUser,
 } from "firebase/auth";
+import {useLocation} from 'react-router-dom'
 
+function Profile() {
+ const location = useLocation();
+ const [currentPhoto, setCurrentPhoto] = useState("");
+ const [currentFullName, setCurrentFullName] = useState("");
+ const [currentUsername, setCurrentUsername] = useState("");
+ const [followers, setFollowers] = useState([]);
+ const [following, setFollowing] = useState([]);
+ const [bio, setBio] = useState("");
+ const [postNumber, setPostNumber] = useState(0);
 
+ //console.log(location.pathname.split("/")[2])
+ 
 
+ useEffect(() => {
+  const users = getFirestore();
+    const usersRef = collection(users, "users");
 
+    getDocs(usersRef)
+      .then((snapshot) => {
+        let users = [];
+        snapshot.docs.forEach((doc) => {
+          users.push({ ...doc.data(), id: doc.id });
+        });
+        //console.log(users)
+        users.forEach((user) => {
+          if (user.uid === location.pathname.split("/")[2]) {
+            setCurrentPhoto(user.photoURL);
+            setCurrentFullName(user.name);
+            setCurrentUsername(user.username);
+            setFollowing(user.following.length);
+            setFollowers(user.followers.length);
+            setBio(user.bio);
+            setPostNumber(Object.keys(user.posts).length)
+          };
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+ }, [])
 
-function Profile () {
-
-      // Returns the signed-in user's profile Pic URL.
-  function getProfilePicUrl() {
-    return getAuth().currentUser.photoURL || "/images/profile_placeholder.png";
-  }
-    return (
-    <img src={getProfilePicUrl()} alt="profile picture" className="profilePicture"></img>
-    )
+  return (
+    <div className="profileContainer">
+      <img
+        src={currentPhoto}
+        referrerPolicy="no-referrer"
+        alt="profile picture"
+        className="profilePicture"
+      ></img>
+        <div className="name">
+              <div className="fullName">{currentFullName}</div>
+              <div className="username">@{currentUsername}</div>
+            </div>
+      <div>{postNumber} posts</div>
+      <div className="followersAndFollowingContainter">
+        <div className="followingOnProfile">{following} Following</div>
+        <div className="followersOnProfile">{followers} Followers</div>
+      </div>
+      <div className="bioContainer">
+        <div className="bioTitle">Bio</div>
+        <div className="bioDescription">{bio}</div>
+      </div>
+    </div>
+  );
 }
 
 export default Profile;

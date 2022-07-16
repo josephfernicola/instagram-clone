@@ -19,8 +19,29 @@ import {
 import { IoIosAddCircleOutline } from "react-icons/io";
 
 function Home(props) {
-  const { homePageSidebar, setHomePageSidebar } = props;
-  const [username, setUsername] = useState("");
+  const { homePageSidebar, setHomePageSidebar, username, setUsername } = props;
+  //const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const users = getFirestore();
+    const usersRef = collection(users, "users");
+    getDocs(usersRef)
+      .then((snapshot) => {
+        let users = [];
+        snapshot.docs.forEach((doc) => {
+          users.push({ ...doc.data(), id: doc.id });
+        });
+        //console.log(users)
+        users.forEach((user) => {
+          if (user.email === getAuth().currentUser.email) {
+            setUsername(user.username);
+          };
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [])
 
   // Initialize firebase auth
   function initFirebaseAuth() {
@@ -30,30 +51,6 @@ function Home(props) {
   // Returns true if a user is signed-in.
   function isUserSignedIn() {
     return !!getAuth().currentUser;
-  }
-
-  function getUsername() {
-    //console.log("current" , getAuth().currentUser.displayName)
-    if (isUserSignedIn()) {
-      const users = getFirestore();
-      const usersRef = collection(users, "users");
-      getDocs(usersRef)
-        .then((snapshot) => {
-          let users = [];
-          snapshot.docs.forEach((doc) => {
-            users.push({ ...doc.data(), id: doc.id });
-          });
-          users.forEach((name) => {
-            if (name.name === getAuth().currentUser.displayName) {
-              setUsername(name.username);
-              console.log(name.username);
-            }
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
   }
 
   function viewFollowing () {
@@ -66,20 +63,16 @@ function Home(props) {
         snapshot.docs.forEach((doc) => {
           users.push({ ...doc.data(), id: doc.id });
         });
-        console.log(users)
+        //console.log("users" , users)
         users.forEach((name) => {
           if (name.name === getAuth().currentUser.displayName) {
-
+            
           }
         });
       })
       .catch((err) => {
         console.log(err);
       });
-  }
-
-  function showId () {
-    console.log(getAuth().currentUser.uid)
   }
 
   // Triggers when the auth state change for instance when the user signs-in or signs-out.
@@ -89,9 +82,10 @@ function Home(props) {
       setHomePageSidebar(
         <div className="sidebarContainer">
           <Link to={`/profile/${getAuth().currentUser.uid}`}>
-          <div className="pictureAndName" onClick={showId}>
+          <div className="pictureAndName">
             <img
               src={getProfilePicUrl()}
+              referrerPolicy="no-referrer"
               alt="Profile Picture"
               className="profilePic"
             ></img>
@@ -135,9 +129,9 @@ function Home(props) {
         </div>
       );
     }
-    function getUserFullName() {
-      return getAuth().currentUser.displayName;
-    }
+  }
+  function getUserFullName() {
+    return getAuth().currentUser.displayName;
   }
 
   // Returns the signed-in user's profile Pic URL.
@@ -175,7 +169,6 @@ function Home(props) {
   }
   useEffect(() => {
     initFirebaseAuth();
-    getUsername();
   }, []);
 
   return (

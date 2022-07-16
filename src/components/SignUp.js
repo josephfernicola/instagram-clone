@@ -3,8 +3,11 @@ import {
   collection,
   addDoc,
   getDocs,
+  doc,
   query,
   where,
+  documentId,
+  setDoc,
 } from "firebase/firestore";
 import instagramLogo from "../images/instagram-logo.jpeg";
 import {
@@ -15,11 +18,12 @@ import {
   signOut,
   deleteUser,
 } from "firebase/auth";
-import { useId } from "react";
+import { useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function SignUp(props) {
-  const { setHomePageSidebar } = props;
+  const { setHomePageSidebar, username, setUsername } = props;
+
   // Shortcuts to DOM Elements.
   const navigate = useNavigate();
 
@@ -42,13 +46,21 @@ function SignUp(props) {
         const user = res.user;
         const q = query(collection(db, "users"), where("uid", "==", user.uid)); //checking if user is already registered with app
         const docs = await getDocs(q);
+
         if (docs.docs.length === 0) {
-          await addDoc(collection(db, "users"), {
+          setUsername(e.target.children[1].value);
+          await setDoc(doc(db, "users", e.target.children[1].value), {
             uid: user.uid,
             name: user.displayName,
             email: user.email,
             username: e.target.children[1].value,
+            photoURL: user.photoURL,
+            followers: [],
+            following: [],
+            bio: "",
+            posts: {},
           });
+      
         } else {
           alert("Email is already registered with the App");
           signOut(getAuth());
@@ -57,41 +69,11 @@ function SignUp(props) {
         console.error(err);
         alert(err.message);
       }
+
       navigate("/instagram-clone");
-
-      // const newUser = new GoogleAuthProvider();
-
-      // await signInWithPopup(getAuth(), newUser);
-      // const users = getFirestore();
-      // const usersRef = collection(users, "users");
-      // addDoc(usersRef, {
-      //   username: e.target.children[1].value,
-      //   id: getUserId(),
-      //   email: getUserEmail(),
-      //   picture: getProfilePicUrl(),
-      // });
-
-      // getDocs(usersRef)
-      //   .then((snapshot) => {
-      //     let users = [];
-      //     snapshot.docs.forEach((doc) => {
-      //       users.push({ ...doc.data(), id: doc.id });
-      //     });
-      //     console.log(users);
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
-
-      // setHomePageSidebar(<div className="sidebarContainer">
-      //     <div className="fullName">{getUserFullName()}</div>
-      //     <div className="userName">@{e.target.children[1].value}</div>
-      // </div>)
-      //getUserId();
-      //getUserEmail();
-      //e.reset();
     }
   };
+
   function getUserFullName() {
     //console.log(getAuth().currentUser.displayName)
     return getAuth().currentUser.displayName;

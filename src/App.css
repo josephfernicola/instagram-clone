@@ -159,6 +159,8 @@ color: rgb(172, 170, 170);
   display: flex;
   justify-content: start;
   align-items: center;
+  text-decoration: none;
+  color: black;
 }
 
 .newPost {
@@ -179,6 +181,11 @@ color: rgb(172, 170, 170);
 }
 
 .profilePicture {
-  position: fixed;
-  top: 10rem;
+  border-radius: 100px;
+  height: 10rem;
+  width: 10rem;
+}
+
+.profileContainer {
+  margin-top: 10rem;
 }

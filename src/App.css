@@ -90,7 +90,8 @@ a {
   cursor: pointer;
   box-shadow: 0 0 15px #44423e;
 }
-.signUpPage {
+.signUpPage,
+.settingsPage {
   display: flex;
   justify-content: center;
 }
@@ -103,6 +104,30 @@ a {
   width: 20rem;
   border: 1px solid black;
   background-color: #ffffff;
+}
+
+.settingsContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 20rem;
+  border: 1px solid black;
+  background-color: #ffffff;
+}
+
+.settingsHeader > h1 {
+margin: 0
+}
+.settingsHeader {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.changeSettingsContainer {
+  display: grid;
+  justify-items: center;
 }
 
 .alreadySignedUpContainer {
@@ -144,15 +169,13 @@ a {
 }
 
 .username {
-color: rgb(172, 170, 170);
+  color: rgb(172, 170, 170);
 }
 
 .profilePic {
-  background-repeat: no-repeat;
-  width: 60px;
-  height: 60px;
-  background-size: 30px;
-  border-radius: 30px;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 10rem;
   margin-right: 2rem;
 }
 .pictureAndName {
@@ -167,7 +190,9 @@ color: rgb(172, 170, 170);
   border: none;
   background-color: inherit;
 }
-.following, .followers, .posts {
+.following,
+.followers,
+.posts {
   text-align: center;
 }
 .iconAndNewPostButton {
@@ -176,7 +201,8 @@ color: rgb(172, 170, 170);
   align-items: center;
   justify-content: center;
 }
-.iconAndNewPostButton:hover, .pictureAndName:hover {
+.iconAndNewPostButton:hover,
+.pictureAndName:hover {
   cursor: pointer;
 }
 
@@ -187,5 +213,44 @@ color: rgb(172, 170, 170);
 }
 
 .profileContainer {
-  margin-top: 10rem;
+  margin-top: 3rem;
+}
+textarea {
+  width: 15rem;
+  height: 8rem;
+}
+
+.editProfileForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  height: 15rem;
+}
+.saveProfileEdits {
+  width: 5.3rem;
+}
+
+.profileCoverPhoto {
+  height: 17rem;
+  width: 100vw;
+  image-rendering: auto;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+.settingsCoverPhoto {
+  height: 13rem;
+  width: 20rem;
+}
+
+.settingsCoverPhoto > input {
+  display: none
+}
+
+.settingsCoverPhoto:hover, .profilePic:hover {
+  cursor: pointer;
+  background-color:#000;
+  opacity:0.9;
 }

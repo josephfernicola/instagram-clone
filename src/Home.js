@@ -19,8 +19,22 @@ import {
 import { IoIosAddCircleOutline } from "react-icons/io";
 
 function Home(props) {
-  const { homePageSidebar, setHomePageSidebar, username, setUsername } = props;
-  //const [username, setUsername] = useState("");
+  const {
+    homePageSidebar,
+    setHomePageSidebar,
+    username,
+    setUsername,
+    followers,
+    setFollowers,
+    following,
+    setFollowing,
+    postNumber,
+    setPostNumber,
+    fullName,
+    setFullName,
+    currentPhoto,
+    setCurrentPhoto
+  } = props;
 
   useEffect(() => {
     const users = getFirestore();
@@ -31,17 +45,22 @@ function Home(props) {
         snapshot.docs.forEach((doc) => {
           users.push({ ...doc.data(), id: doc.id });
         });
-        //console.log(users)
         users.forEach((user) => {
           if (user.email === getAuth().currentUser.email) {
             setUsername(user.username);
-          };
+            setFollowers(user.followers.length);
+            setFollowing(user.following.length);
+            setPostNumber(Object.keys(user.posts).length);
+            setFullName(user.name);
+            setCurrentPhoto(user.photoURL)
+
+          }
         });
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [])
+  }, []);
 
   // Initialize firebase auth
   function initFirebaseAuth() {
@@ -53,7 +72,7 @@ function Home(props) {
     return !!getAuth().currentUser;
   }
 
-  function viewFollowing () {
+  function viewFollowing() {
     const users = getFirestore();
     const usersRef = collection(users, "users");
 
@@ -66,7 +85,6 @@ function Home(props) {
         //console.log("users" , users)
         users.forEach((name) => {
           if (name.name === getAuth().currentUser.displayName) {
-            
           }
         });
       })
@@ -82,31 +100,31 @@ function Home(props) {
       setHomePageSidebar(
         <div className="sidebarContainer">
           <Link to={`/profile/${getAuth().currentUser.uid}`}>
-          <div className="pictureAndName">
-            <img
-              src={getProfilePicUrl()}
-              referrerPolicy="no-referrer"
-              alt="Profile Picture"
-              className="profilePic"
-            ></img>
-            <div className="name">
-              <div className="fullName">{getUserFullName()}</div>
-              <div className="username">@{username}</div>
+            <div className="pictureAndName">
+              <img
+                src={currentPhoto}
+                referrerPolicy="no-referrer"
+                alt="Profile Picture"
+                className="profilePic"
+              ></img>
+              <div className="name">
+                <div className="fullName">{fullName}</div>
+                <div className="username">@{username}</div>
+              </div>
             </div>
-          </div>
           </Link>
           <div className="followersAndPosts">
             <div className="following">
-              <div className="followingNumber">0</div>
+              <div className="followingNumber">{following}</div>
               <div onClick={viewFollowing}>Following</div>
             </div>
 
             <div className="followers">
-              <div className="followersNumber">0</div>
+              <div className="followersNumber">{followers}</div>
               <div>Followers</div>
             </div>
             <div className="posts">
-              <div className="postsNumber">0</div>
+              <div className="postsNumber">{postNumber}</div>
               <div>Posts</div>
             </div>
             <div className="iconAndNewPostButton">
@@ -129,9 +147,6 @@ function Home(props) {
         </div>
       );
     }
-  }
-  function getUserFullName() {
-    return getAuth().currentUser.displayName;
   }
 
   // Returns the signed-in user's profile Pic URL.
@@ -160,7 +175,7 @@ function Home(props) {
           .catch((error) => {
             // An error ocurred
             // ...
-            alert(error)
+            alert(error);
           });
       }
     } catch (err) {

@@ -23,8 +23,7 @@ import { useNavigate } from "react-router-dom";
 
 function SignUp(props) {
   const { setHomePageSidebar, username, setUsername } = props;
-
-  // Shortcuts to DOM Elements.
+  
   const navigate = useNavigate();
 
   const userPicElement = document.getElementById("user-pic");

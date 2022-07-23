@@ -19,6 +19,8 @@ const RouteSwitch = () => {
   const [currentCoverPhoto, setCurrentCoverPhoto] = useState(
     <img src={coverPhoto} alt="Default Cover Photo" className="profileCoverPhoto"></img>
   );
+  const [currentCoverPhotoURL, setCurrentCoverPhotoURL] = useState(coverPhoto)
+  const [currentProfilePicURL, setCurrentProfilePicURL] = useState(currentPhoto)
 
   return (
     <BrowserRouter>
@@ -42,6 +44,7 @@ const RouteSwitch = () => {
               setFullName={setFullName}
               currentPhoto={currentPhoto}
               setCurrentPhoto={setCurrentPhoto}
+              
             />
           }
         />
@@ -66,6 +69,10 @@ const RouteSwitch = () => {
               setCurrentPhoto={setCurrentPhoto}
               currentCoverPhoto={currentCoverPhoto}
               setCurrentCoverPhoto={setCurrentCoverPhoto}
+              currentCoverPhotoURL={currentCoverPhotoURL}
+              setCurrentCoverPhotoURL={setCurrentCoverPhotoURL}
+              currentProfilePicURL={currentProfilePicURL}
+              setCurrentProfilePicURL={setCurrentProfilePicURL}
             />
           }
         />
@@ -83,6 +90,10 @@ const RouteSwitch = () => {
               setCurrentPhoto={setCurrentPhoto}
               currentCoverPhoto={currentCoverPhoto}
               setCurrentCoverPhoto={setCurrentCoverPhoto}
+              currentCoverPhotoURL={currentCoverPhotoURL}
+              setCurrentCoverPhotoURL={setCurrentCoverPhotoURL}
+              currentProfilePicURL={currentProfilePicURL}
+              setCurrentProfilePicURL={setCurrentProfilePicURL}
             />
           }
         />

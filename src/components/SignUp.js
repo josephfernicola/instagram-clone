@@ -20,6 +20,7 @@ import {
 } from "firebase/auth";
 import { useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import coverPhoto from "../images/default-cover-photo.jpg";
 
 function SignUp(props) {
   const { setHomePageSidebar, username, setUsername } = props;
@@ -58,6 +59,7 @@ function SignUp(props) {
             following: [],
             bio: "",
             posts: {},
+            coverPhoto: coverPhoto
           });
       
         } else {

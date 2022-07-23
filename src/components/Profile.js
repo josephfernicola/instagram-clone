@@ -17,7 +17,6 @@ import {
   deleteUser,
 } from "firebase/auth";
 import { useLocation } from "react-router-dom";
-import coverPhoto from "../images/default-cover-photo.jpg";
 
 function Profile(props) {
   const {
@@ -27,6 +26,8 @@ function Profile(props) {
     setCurrentPhoto,
     currentCoverPhoto,
     setCurrentCoverPhoto,
+    currentCoverPhotoURL,
+    setCurrentCoverPhotoURL,
   } = props;
   const location = useLocation();
 
@@ -37,15 +38,6 @@ function Profile(props) {
   const [postNumber, setPostNumber] = useState(0);
   const [profileButtons, setProfileButtons] = useState("");
 
-  useEffect(() => {
-    setCurrentCoverPhoto(
-      <img
-        src={coverPhoto}
-        alt="Default Cover Photo"
-        className="profileCoverPhoto"
-      ></img>
-    );
-  }, []);
   useEffect(() => {
     const users = getFirestore();
     const usersRef = collection(users, "users");
@@ -66,6 +58,14 @@ function Profile(props) {
             setFollowers(user.followers.length);
             setBio(user.bio);
             setPostNumber(Object.keys(user.posts).length);
+            setCurrentCoverPhoto(
+              <img
+                src={user.coverPhoto}
+                alt="Default Cover Photo"
+                className="profileCoverPhoto"
+              ></img>
+            );
+            
           }
         });
       })

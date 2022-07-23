@@ -9,8 +9,9 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { Link, useNavigate } from "react-router-dom";
-import coverPhoto from "../images/default-cover-photo.jpg";
-import { FiEdit, FiEdit2 } from 'react-icons/fi';
+import axios from "axios";
+import { FiEdit, FiEdit2 } from "react-icons/fi";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 function Settings(props) {
   const {
@@ -24,43 +25,127 @@ function Settings(props) {
     setCurrentPhoto,
     currentCoverPhoto,
     setCurrentCoverPhoto,
+    currentCoverPhotoURL,
+    setCurrentCoverPhotoURL,
+    currentProfilePicURL,
+    setCurrentProfilePicURL
   } = props;
 
-  const inputRef = useRef(null);
+  const inputProfilePicRef = useRef(null);
+  const inputCoverPhotoRef = useRef(null);
+  // Create a root reference
+  const storage = getStorage();
 
-  const handleClick = () => {
+  const handleCoverPhotoClick = () => {
     // open file input box on click of other element
-    inputRef.current.click();
+    inputCoverPhotoRef.current.click();
   };
-
-  const handleFileChange = (event) => {
-    const fileObj = event.target.files && event.target.files[0];
-    if (!fileObj) {
+  const handleProfilePicClick = () => {
+    // open file input box on click of other element
+    inputProfilePicRef.current.click();
+  };
+  const handleCoverPhotoChange = (event) => {
+    const file = event.target.files[0];
+    if (!file) {
       return;
     }
+    if (file.type.includes("image")) {
+      //console.log(storage)
 
-    console.log("fileObj is", fileObj);
+      const imageRef = ref(
+        storage,
+        `coverPhotos/${getAuth().currentUser.uid}`
+      );
+      uploadBytes(imageRef, file).then(() => {
+        alert("Image Uploaded!");
+       
+        getDownloadURL(imageRef).then((url) => {
+          console.log("url", url);
+          setCurrentCoverPhotoURL(url)
+          setCurrentCoverPhoto(
+            <img
+              src={url}
+              alt="Default Cover"
+              className="settingsCoverPhoto"
+            ></img>
+          );
+          const db = getFirestore();
+          const usersRef = collection(db, "users");
 
-    //  reset file input
+          getDocs(usersRef)
+            .then((snapshot) => {
+              let users = [];
+              snapshot.docs.forEach((doc) => {
+                users.push({ ...doc.data(), id: doc.id });
+              });
+              //console.log(users)
+              users.forEach((user) => {
+                if (user.email === getAuth().currentUser.email) {
+                  updateDoc(doc(db, "users", user.username), {
+                    coverPhoto: url,
+                  });
+                }
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+      });
+    }
     event.target.value = null;
-
-    //  is now empty
-    console.log(event.target.files);
-
-    //  can still access file object here
-    console.log(fileObj);
-    console.log(fileObj.name);
   };
+  const handleProfilePicChange = (event) => {
+    const file = event.target.files[0];
+    if (!file) {
+      return;
+    }
+    if (file.type.includes("image")) {
+      //console.log(storage)
 
-  useEffect(() => {
-    setCurrentCoverPhoto(
-      <img
-        src={coverPhoto}
-        alt="Default Cover"
-        className="settingsCoverPhoto"
-      ></img>
-    );
-  }, []);
+      const imageRef = ref(
+        storage,
+        `profilePictures/${getAuth().currentUser.uid}`
+      );
+      uploadBytes(imageRef, file).then(() => {
+        alert("Image Uploaded!");
+       
+        getDownloadURL(imageRef).then((url) => {
+          console.log("url", url);
+          setCurrentProfilePicURL(url)
+          setCurrentPhoto(
+            <img
+              src={url}
+              alt="Default Profile"
+              className="settingsProfilePic"
+            ></img>
+          );
+          const db = getFirestore();
+          const usersRef = collection(db, "users");
+
+          getDocs(usersRef)
+            .then((snapshot) => {
+              let users = [];
+              snapshot.docs.forEach((doc) => {
+                users.push({ ...doc.data(), id: doc.id });
+              });
+
+              users.forEach((user) => {
+                if (user.email === getAuth().currentUser.email) {
+                  updateDoc(doc(db, "users", user.username), {
+                    photoURL: url,
+                  });
+                }
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+      });
+    }
+    event.target.value = null;
+  };
 
   useEffect(() => {
     const users = getFirestore();
@@ -71,12 +156,22 @@ function Settings(props) {
         snapshot.docs.forEach((doc) => {
           users.push({ ...doc.data(), id: doc.id });
         });
-        //console.log(users)
         users.forEach((user) => {
           if (user.email === getAuth().currentUser.email) {
             setUsername(user.username);
             setBio(user.bio);
-            //setCurrentPhoto(user.photoURL);
+            setCurrentPhoto(<img
+                src={user.photoURL}
+                alt="Default Cover"
+                className="settingsProfilePic"
+              ></img>);
+            setCurrentCoverPhoto(
+                <img
+                  src={user.coverPhoto}
+                  alt="Default Cover"
+                  className="settingsCoverPhoto"
+                ></img>
+              );
           }
         });
       })
@@ -87,8 +182,7 @@ function Settings(props) {
 
   async function submitProfileChanges(e) {
     e.preventDefault();
-    console.log(e.target.children[0].children[2].value);
-    console.log(e.target.children[1].children[2].value);
+
     const users = getFirestore();
     const usersRef = collection(users, "users");
     getDocs(usersRef)
@@ -97,7 +191,6 @@ function Settings(props) {
         snapshot.docs.forEach((doc) => {
           users.push({ ...doc.data(), id: doc.id });
         });
-        //console.log(users);
         users.forEach((user) => {
           if (user.email === getAuth().currentUser.email) {
             const db = getFirestore();
@@ -120,30 +213,24 @@ function Settings(props) {
       <div className="settingsContainer">
         <div className="settingsHeader">
           <h1>Edit Profile</h1>
-          
         </div>
         <div className="changeSettingsContainer">
           <div className="settingsCoverPhoto">
             <input
-            
               type="file"
-              ref={inputRef}
-              onChange={handleFileChange}
+              ref={inputCoverPhotoRef}
+              onChange={handleCoverPhotoChange}
             ></input>
-            <div onClick={handleClick}>
- 
-            {currentCoverPhoto}
-           
-            </div>
-            
+            <div onClick={handleCoverPhotoClick}>{currentCoverPhoto}</div>
           </div>
-          <img
-            src={currentPhoto}
-            referrerPolicy="no-referrer"
-            alt="Profile"
-            className="profilePic"
-            onClick={handleClick}
-          ></img>
+          <div className="settingsProfilePicContainer">
+          <input
+              type="file"
+              ref={inputProfilePicRef}
+              onChange={handleProfilePicChange}
+            ></input>
+          <div onClick={handleProfilePicClick}>{currentPhoto}</div>
+          </div>
           <form className="editProfileForm" onSubmit={submitProfileChanges}>
             <div>
               <div>Display Name:</div>

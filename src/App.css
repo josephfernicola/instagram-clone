@@ -172,11 +172,16 @@ margin: 0
   color: rgb(172, 170, 170);
 }
 
-.profilePic {
+.profilePic{
   width: 6rem;
   height: 6rem;
   border-radius: 10rem;
   margin-right: 2rem;
+}
+.settingsProfilePic {
+  border-radius: 10rem;
+  width: 6rem;
+  height: 6rem;
 }
 .pictureAndName {
   display: flex;
@@ -245,11 +250,11 @@ textarea {
   width: 20rem;
 }
 
-.settingsCoverPhoto > input {
+.settingsCoverPhoto > input, .settingsProfilePicContainer > input {
   display: none
 }
 
-.settingsCoverPhoto:hover, .profilePic:hover {
+.settingsCoverPhoto:hover, .settingsProfilePic:hover {
   cursor: pointer;
   background-color:#000;
   opacity:0.9;

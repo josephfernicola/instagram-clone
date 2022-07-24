@@ -8,9 +8,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { FiEdit, FiEdit2 } from "react-icons/fi";
+import { Link} from "react-router-dom";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 function Settings(props) {
@@ -21,8 +19,8 @@ function Settings(props) {
     setBio,
     fullName,
     setFullName,
-    currentPhoto,
-    setCurrentPhoto,
+    currentProfilePicture,
+    setCurrentProfilePicture,
     currentCoverPhoto,
     setCurrentCoverPhoto,
     currentCoverPhotoURL,
@@ -35,6 +33,10 @@ function Settings(props) {
   const inputCoverPhotoRef = useRef(null);
   // Create a root reference
   const storage = getStorage();
+
+  useEffect(() => {
+  console.log(currentProfilePicture)
+  }, [])
 
   const handleCoverPhotoClick = () => {
     // open file input box on click of other element
@@ -62,6 +64,7 @@ function Settings(props) {
         getDownloadURL(imageRef).then((url) => {
           console.log("url", url);
           setCurrentCoverPhotoURL(url)
+          
           setCurrentCoverPhoto(
             <img
               src={url}
@@ -113,7 +116,7 @@ function Settings(props) {
         getDownloadURL(imageRef).then((url) => {
           console.log("url", url);
           setCurrentProfilePicURL(url)
-          setCurrentPhoto(
+          setCurrentProfilePicture(
             <img
               src={url}
               alt="Default Profile"
@@ -146,40 +149,6 @@ function Settings(props) {
     }
     event.target.value = null;
   };
-
-  useEffect(() => {
-    const users = getFirestore();
-    const usersRef = collection(users, "users");
-    getDocs(usersRef)
-      .then((snapshot) => {
-        let users = [];
-        snapshot.docs.forEach((doc) => {
-          users.push({ ...doc.data(), id: doc.id });
-        });
-        users.forEach((user) => {
-          if (user.email === getAuth().currentUser.email) {
-            setUsername(user.username);
-            setBio(user.bio);
-            setCurrentPhoto(<img
-                src={user.photoURL}
-                alt="Default Cover"
-                className="settingsProfilePic"
-              ></img>);
-            setCurrentCoverPhoto(
-                <img
-                  src={user.coverPhoto}
-                  alt="Default Cover"
-                  className="settingsCoverPhoto"
-                ></img>
-              );
-          }
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
   async function submitProfileChanges(e) {
     e.preventDefault();
 
@@ -198,6 +167,8 @@ function Settings(props) {
               name: e.target.children[0].children[2].value,
               bio: e.target.children[1].children[2].value,
             });
+            setBio(e.target.children[1].children[2].value);
+            setFullName(e.target.children[0].children[2].value,)
 
             console.log(user);
           }
@@ -221,7 +192,7 @@ function Settings(props) {
               ref={inputCoverPhotoRef}
               onChange={handleCoverPhotoChange}
             ></input>
-            <div onClick={handleCoverPhotoClick}>{currentCoverPhoto}</div>
+            <div onClick={handleCoverPhotoClick} className="settingsCoverPhotoSmall">{currentCoverPhoto}</div>
           </div>
           <div className="settingsProfilePicContainer">
           <input
@@ -229,7 +200,7 @@ function Settings(props) {
               ref={inputProfilePicRef}
               onChange={handleProfilePicChange}
             ></input>
-          <div onClick={handleProfilePicClick}>{currentPhoto}</div>
+          <div onClick={handleProfilePicClick} className="settingsProfilePic">{currentProfilePicture}</div>
           </div>
           <form className="editProfileForm" onSubmit={submitProfileChanges}>
             <div>

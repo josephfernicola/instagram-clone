@@ -1,11 +1,18 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import React, { useState } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+} from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import Home from "../Home";
 import NavBar from "./NavBar";
 import Profile from "./Profile";
 import Settings from "./Settings";
 import SignUp from "./SignUp";
 import coverPhoto from "../images/default-cover-photo.jpg";
+import { getAuth } from "firebase/auth";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 
 const RouteSwitch = () => {
   const [homePageSidebar, setHomePageSidebar] = useState("");
@@ -15,16 +22,91 @@ const RouteSwitch = () => {
   const [postNumber, setPostNumber] = useState(0);
   const [bio, setBio] = useState("");
   const [fullName, setFullName] = useState("");
-  const [currentPhoto, setCurrentPhoto] = useState("");
+  const [currentProfilePicture, setCurrentProfilePicture] = useState("");
   const [currentCoverPhoto, setCurrentCoverPhoto] = useState(
-    <img src={coverPhoto} alt="Default Cover Photo" className="profileCoverPhoto"></img>
+    <img
+      src={coverPhoto}
+      alt="Default Cover Photo"
+      className="profileCoverPhoto"
+    ></img>
   );
-  const [currentCoverPhotoURL, setCurrentCoverPhotoURL] = useState(coverPhoto)
-  const [currentProfilePicURL, setCurrentProfilePicURL] = useState(currentPhoto)
+  const [currentCoverPhotoURL, setCurrentCoverPhotoURL] = useState(coverPhoto);
+  const [currentProfilePicURL, setCurrentProfilePicURL] = useState("");
+  const [profileButtons, setProfileButtons] = useState(
+    <div className="profileButtonsContainer">
+      <Link to="/settings">
+        <button className="editProfileButton">Edit Profile</button>
+      </Link>
+      <button className="addPostButton">+</button>
+    </div>
+  );
+
+    // Returns true if a user is signed-in.
+    function isUserSignedIn() {
+      return !!getAuth().currentUser;
+    }
+
+  useEffect(() => {
+    if (isUserSignedIn) {
+    const users = getFirestore();
+    const usersRef = collection(users, "users");
+    getDocs(usersRef)
+      .then((snapshot) => {
+        let users = [];
+        snapshot.docs.forEach((doc) => {
+          users.push({ ...doc.data(), id: doc.id });
+        });
+        users.forEach((user) => {
+          if (user.email === getAuth().currentUser.email) {
+            setUsername(user.username);
+            setFollowers(user.followers.length);
+            setFollowing(user.following.length);
+            setPostNumber(Object.keys(user.posts).length);
+            setFullName(user.name);
+            setCurrentProfilePicURL(user.photoURL);
+            setBio(user.bio);
+            setCurrentProfilePicture(
+              <img
+                src={user.photoURL}
+                alt="Default Profile Pic"
+                className="homepageProfilePic"
+              ></img>
+            );
+            setCurrentCoverPhoto(
+              <img
+                src={user.coverPhoto}
+                alt="Default Cover Photo"
+                className="profileCoverPhoto"
+              ></img>
+            );
+          }
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }
+  });
 
   return (
     <BrowserRouter>
-      <NavBar />
+      <NavBar
+        username={username}
+        setUsername={setUsername}
+        followers={followers}
+        setFollowers={setFollowers}
+        following={following}
+        setFollowing={setFollowing}
+        postNumber={postNumber}
+        setPostNumber={setPostNumber}
+        FullName={fullName}
+        setFullName={setFullName}
+        currentProfilePicture={currentProfilePicture}
+        setCurrentProfilePicture={setCurrentProfilePicture}
+        currentProfilePicURL={currentProfilePicURL}
+        setCurrentProfilePicURL={setCurrentProfilePicURL}
+        setCurrentCoverPhoto={setCurrentCoverPhoto}
+      />
       <Routes>
         <Route
           path="/instagram-clone"
@@ -42,9 +124,9 @@ const RouteSwitch = () => {
               setPostNumber={setPostNumber}
               fullName={fullName}
               setFullName={setFullName}
-              currentPhoto={currentPhoto}
-              setCurrentPhoto={setCurrentPhoto}
-              
+              currentProfilePicture={currentProfilePicture}
+              setCurrentProfilePicture={setCurrentProfilePicture}
+              currentProfilePicURL={currentProfilePicURL}
             />
           }
         />
@@ -64,15 +146,22 @@ const RouteSwitch = () => {
           element={
             <Profile
               bio={bio}
+              fullName={fullName}
+              username={username}
+              postNumber={postNumber}
+              following={following}
+              followers={followers}
               setBio={setBio}
-              currentPhoto={currentPhoto}
-              setCurrentPhoto={setCurrentPhoto}
+              currentProfilePicture={currentProfilePicture}
+              setCurrentProfilePicture={setCurrentProfilePicture}
               currentCoverPhoto={currentCoverPhoto}
               setCurrentCoverPhoto={setCurrentCoverPhoto}
               currentCoverPhotoURL={currentCoverPhotoURL}
               setCurrentCoverPhotoURL={setCurrentCoverPhotoURL}
               currentProfilePicURL={currentProfilePicURL}
               setCurrentProfilePicURL={setCurrentProfilePicURL}
+              profileButtons={profileButtons}
+              setProfileButtons={setProfileButtons}
             />
           }
         />
@@ -86,8 +175,8 @@ const RouteSwitch = () => {
               setBio={setBio}
               fullName={fullName}
               setFullName={setFullName}
-              currentPhoto={currentPhoto}
-              setCurrentPhoto={setCurrentPhoto}
+              currentProfilePicture={currentProfilePicture}
+              setCurrentProfilePicture={setCurrentProfilePicture}
               currentCoverPhoto={currentCoverPhoto}
               setCurrentCoverPhoto={setCurrentCoverPhoto}
               currentCoverPhotoURL={currentCoverPhotoURL}

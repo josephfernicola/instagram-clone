@@ -5,10 +5,9 @@ import {
   getDocs,
   query,
   where,
-  addDoc,
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import {
   getAuth,
   GoogleAuthProvider,
@@ -32,66 +31,38 @@ function Home(props) {
     setPostNumber,
     fullName,
     setFullName,
-    currentPhoto,
-    setCurrentPhoto
+    currentProfilePicture,
+    setCurrentProfilePicture,
+    currentProfilePicURL
   } = props;
 
-  useEffect(() => {
-    const users = getFirestore();
-    const usersRef = collection(users, "users");
-    getDocs(usersRef)
-      .then((snapshot) => {
-        let users = [];
-        snapshot.docs.forEach((doc) => {
-          users.push({ ...doc.data(), id: doc.id });
-        });
-        users.forEach((user) => {
-          if (user.email === getAuth().currentUser.email) {
-            setUsername(user.username);
-            setFollowers(user.followers.length);
-            setFollowing(user.following.length);
-            setPostNumber(Object.keys(user.posts).length);
-            setFullName(user.name);
-            setCurrentPhoto(user.photoURL)
-
-          }
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   // Initialize firebase auth
   function initFirebaseAuth() {
     // Listen to auth state changes.
     onAuthStateChanged(getAuth(), authStateObserver);
   }
-  // Returns true if a user is signed-in.
-  function isUserSignedIn() {
-    return !!getAuth().currentUser;
-  }
 
-  function viewFollowing() {
-    const users = getFirestore();
-    const usersRef = collection(users, "users");
+  // function viewFollowing() {
+  //   const users = getFirestore();
+  //   const usersRef = collection(users, "users");
 
-    getDocs(usersRef)
-      .then((snapshot) => {
-        let users = [];
-        snapshot.docs.forEach((doc) => {
-          users.push({ ...doc.data(), id: doc.id });
-        });
-        //console.log("users" , users)
-        users.forEach((name) => {
-          if (name.name === getAuth().currentUser.displayName) {
-          }
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+  //   getDocs(usersRef)
+  //     .then((snapshot) => {
+  //       let users = [];
+  //       snapshot.docs.forEach((doc) => {
+  //         users.push({ ...doc.data(), id: doc.id });
+  //       });
+  //       //console.log("users" , users)
+  //       users.forEach((name) => {
+  //         if (name.name === getAuth().currentUser.displayName) {
+  //         }
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }
 
   // Triggers when the auth state change for instance when the user signs-in or signs-out.
   function authStateObserver(user) {
@@ -101,12 +72,7 @@ function Home(props) {
         <div className="sidebarContainer">
           <Link to={`/profile/${getAuth().currentUser.uid}`}>
             <div className="pictureAndName">
-              <img
-                src={currentPhoto}
-                referrerPolicy="no-referrer"
-                alt="Profile Picture"
-                className="profilePic"
-              ></img>
+              {currentProfilePicture}
               <div className="name">
                 <div className="fullName">{fullName}</div>
                 <div className="username">@{username}</div>
@@ -147,11 +113,6 @@ function Home(props) {
         </div>
       );
     }
-  }
-
-  // Returns the signed-in user's profile Pic URL.
-  function getProfilePicUrl() {
-    return getAuth().currentUser.photoURL || "/images/profile_placeholder.png";
   }
 
   async function logIn() {

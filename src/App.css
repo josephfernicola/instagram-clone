@@ -15,6 +15,7 @@ body {
   position: fixed;
   top: 0;
   width: 100%;
+  z-index: 10;
 }
 a {
   text-decoration: none;
@@ -54,6 +55,7 @@ a {
 .notificationsIcon > svg {
   height: 1.5rem;
   width: 1.5rem;
+  color: black;
 }
 .navBarIcons > *:hover {
   cursor: pointer;
@@ -118,7 +120,7 @@ a {
 }
 
 .settingsHeader > h1 {
-margin: 0
+  margin: 0;
 }
 .settingsHeader {
   margin-top: 2.5rem;
@@ -172,12 +174,25 @@ margin: 0
   color: rgb(172, 170, 170);
 }
 
-.profilePic{
+.homepageProfilePic {
   width: 6rem;
   height: 6rem;
   border-radius: 10rem;
   margin-right: 2rem;
+  object-fit: cover;
 }
+
+.profilePagePic {
+  width: 10rem;
+  height: 10rem;
+  border-radius: 10rem;
+  margin-right: 2rem;
+  object-fit: cover;
+  position: absolute;
+  top: 17rem;
+  left: 5rem;
+}
+
 .settingsProfilePic {
   border-radius: 10rem;
   width: 6rem;
@@ -215,6 +230,7 @@ margin: 0
   border-radius: 100px;
   height: 10rem;
   width: 10rem;
+  object-fit: cover;
 }
 
 .profileContainer {
@@ -233,13 +249,50 @@ textarea {
   text-align: center;
   height: 15rem;
 }
+.profileButtons {
+  margin-top: 1rem;
+}
+
+.profileButtonsContainer {
+  width: 11rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  top: 18.5rem;
+  right: 5rem;
+}
+
+.addPostButton {
+  border-radius: 4rem;
+  border: 1px solid rgb(206, 199, 199);
+  background-color: white;
+  height: 2rem;
+  width: 2rem;
+}
+
+.editProfileButton {
+  height: 3rem;
+  width: 8rem;
+  border: 1px solid rgb(206, 199, 199);
+  border-radius: 5rem;
+  background-color: white;
+}
+
+.addPostButton:hover,
+.editProfileButton:hover {
+  cursor: pointer;
+  opacity: 0.7;
+}
+
 .saveProfileEdits {
   width: 5.3rem;
 }
 
 .profileCoverPhoto {
-  height: 17rem;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
   image-rendering: auto;
   image-rendering: crisp-edges;
   image-rendering: pixelated;
@@ -250,12 +303,48 @@ textarea {
   width: 20rem;
 }
 
-.settingsCoverPhoto > input, .settingsProfilePicContainer > input {
-  display: none
+.settingsCoverPhoto > input,
+.settingsProfilePicContainer > input {
+  display: none;
 }
 
-.settingsCoverPhoto:hover, .settingsProfilePic:hover {
+.settingsCoverPhoto:hover,
+.settingsProfilePic:hover {
   cursor: pointer;
-  background-color:#000;
-  opacity:0.9;
+  background-color: #000;
+  opacity: 0.9;
+}
+.settingsProfilePic {
+  object-fit: cover;
+}
+
+.profileCoverPhotoContainer {
+  overflow: hidden;
+  height: 17rem;
+}
+
+.bioDescription {
+  width: 15rem;
+}
+
+.profileInfoLeft {
+  margin-top: 7rem;
+  margin-left: 6rem;
+}
+
+.navBarProfileButton {
+  color: white;
+}
+
+.profilePostContainer {
+  border: 1px solid black;
+  height: 100vh;
+  width: 60rem;
+  margin-top: 5rem;
+}
+
+.userInfoAndPostContainer {
+  width: 79rem;
+  display: flex;
+  justify-content: space-between;
 }

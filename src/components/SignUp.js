@@ -24,10 +24,6 @@ function SignUp(props) {
   
   const navigate = useNavigate();
 
-  const userPicElement = document.getElementById("user-pic");
-  const userNameElement = document.querySelector(".userName");
-  const signInButtonElement = document.querySelector(".logInButton");
-
   const signUpUser = async (e) => {
     e.preventDefault();
     console.log(e.target.children[1].value); //username value

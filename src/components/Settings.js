@@ -62,7 +62,7 @@ function Settings(props) {
         alert("Image Uploaded!");
        
         getDownloadURL(imageRef).then((url) => {
-          console.log("url", url);
+
           setCurrentCoverPhotoURL(url)
           
           setCurrentCoverPhoto(
@@ -81,7 +81,7 @@ function Settings(props) {
               snapshot.docs.forEach((doc) => {
                 users.push({ ...doc.data(), id: doc.id });
               });
-              //console.log(users)
+   
               users.forEach((user) => {
                 if (user.email === getAuth().currentUser.email) {
                   updateDoc(doc(db, "users", user.username), {

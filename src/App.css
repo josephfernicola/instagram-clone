@@ -344,7 +344,67 @@ textarea {
 }
 
 .userInfoAndPostContainer {
-  width: 79rem;
+  width: 85rem;
   display: flex;
   justify-content: space-between;
+}
+
+.during-popup {
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+}
+.PopUp {
+  position: fixed;
+  left: 25%;
+  top: 5%;
+  width: 50%;
+  border: 1px solid #011627;
+  border-radius: 1rem;
+  height: 40rem;
+  background-color: #fdfffc;
+  color: #011627;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.createNewPostTitle {
+  margin-top: 3.5rem;
+}
+
+.PopUpContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.popup-x {
+  width: 3rem;
+  height: 2rem;
+  font-size: 2rem;
+  border: none;
+  border-top-right-radius: 1rem;
+  background-color: white;
+  position: absolute;
+  top: 3rem;
+  right: 3rem;
+}
+
+.newPostAndCaptionContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  height: 50%;
+  margin-bottom: 8rem;
+}
+
+.newPostAndCaptionContainer > input {
+display: none;
 }

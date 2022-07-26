@@ -82,7 +82,7 @@ function Home(props) {
           <div className="followersAndPosts">
             <div className="following">
               <div className="followingNumber">{following}</div>
-              <div onClick={viewFollowing}>Following</div>
+              <div>Following</div>
             </div>
 
             <div className="followers">

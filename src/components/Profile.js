@@ -26,6 +26,8 @@ function Profile(props) {
   } = props;
   const location = useLocation();
 
+
+
   return (
     <div className="profileContainer">
       <div className="upperContainer">

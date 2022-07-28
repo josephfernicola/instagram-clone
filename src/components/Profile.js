@@ -1,4 +1,6 @@
 import { useLocation } from "react-router-dom";
+import ProfilePostContainer from './ProfilePostContainer'
+import React, {useState} from 'react'
 
 function Profile(props) {
   const {
@@ -23,9 +25,10 @@ function Profile(props) {
     username,
     profileButtons,
     setProfileButtons,
+    userPosts, 
+    setUserPosts
   } = props;
   const location = useLocation();
-
 
 
   return (
@@ -49,7 +52,7 @@ function Profile(props) {
               <div className="bioDescription">{bio}</div>
             </div>
           </div>
-          <div className="profilePostContainer"></div>
+          {<ProfilePostContainer userPosts={userPosts} setUserPosts={setUserPosts}/>}
         </div>
       </div>
       <div className="profileButtons">{profileButtons}</div>

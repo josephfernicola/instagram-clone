@@ -9,20 +9,21 @@ import {
   addDoc,
   doc,
   updateDoc,
+  arrayUnion,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
 const PopUp = (props) => {
   // function that takes boolean as param to conditionally display popup
-  const { setUploadPostModal } = props;
+  const { setUploadPostModal, userPosts, setUserPosts } = props;
   const [newPostPreview, setNewPostPreview] = useState("");
   const [selectedImageURL, setSelectedImageURL] = useState();
   const [selectedImageObj, setSelectedImageObj] = useState();
   const [newPostCaption, setNewPostCaption] = useState();
   const inputNewPostRef = useRef(null);
   const storage = getStorage();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleNewPostClick = () => {
     // open file input box on click of other element
@@ -37,7 +38,6 @@ const PopUp = (props) => {
       return;
     }
     if (file.type.includes("image")) {
-      
       let reader = new FileReader();
       reader.onload = (e) => {
         setNewPostPreview(
@@ -48,7 +48,7 @@ const PopUp = (props) => {
           ></img>
         );
         setSelectedImageURL(e.target.result);
-        setSelectedImageObj(file)
+        setSelectedImageObj(file);
       };
       reader.readAsDataURL(file);
       event.target.value = null;
@@ -57,41 +57,43 @@ const PopUp = (props) => {
 
   const handleNewPostSubmit = (e) => {
     e.preventDefault();
-    console.log("selected image" , selectedImageURL)
 
-    const imageRef = ref(storage, `posts/${getAuth().currentUser.uid}/${e.target.children[3].value}`);
-    uploadBytes(imageRef, selectedImageObj).then(() => {
-      alert("Image Uploaded!");
-      console.log("image ref" , imageRef)
+    const imageRef = ref(
+      storage,
+      `posts/${getAuth().currentUser.uid}/${e.target.children[3].value}`
+    );
+    uploadBytes(imageRef, selectedImageObj)
+      .then(() => {
+        alert("Image Uploaded!");
 
-    //   getDownloadURL(imageRef).then((url) => {
-    //       console.log("url", url)
-         const db = getFirestore();
-         const usersRef = collection(db, "users");
-
-        getDocs(usersRef)
-          .then((snapshot) => {
-            let users = [];
-            snapshot.docs.forEach((doc) => {
-              users.push({ ...doc.data(), id: doc.id });
+        getDownloadURL(imageRef)
+          .then((url) => {
+            const db = getFirestore();
+            const usersRef = doc(db, "users", getAuth().currentUser.email);
+            updateDoc(usersRef, {
+              posts: arrayUnion({
+                image: url,
+                caption: e.target.children[3].value,
+              }),
             });
-
-            users.forEach((user) => {
-              if (user.email === getAuth().currentUser.email) {
-                addDoc(db, "users", user.username, {
-                  posts: { image: selectedImageURL, caption: e.target.children[3].value },
-                });
-              }
-            });
+            setUserPosts([
+              ...userPosts,
+              {
+                image: url,
+                caption: e.target.children[3].value,
+              },
+            ]);
           })
+
           .catch((err) => {
             console.log(err);
           });
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    // }).catch((err) => {
-    //     console.log(err);
-    //   });
-    setUploadPostModal(false)
+
+    setUploadPostModal(false);
   };
 
   return (

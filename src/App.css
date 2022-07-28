@@ -200,7 +200,7 @@ a {
 }
 .pictureAndName {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   text-decoration: none;
   color: black;
@@ -282,7 +282,7 @@ textarea {
 .addPostButton:hover,
 .editProfileButton:hover {
   cursor: pointer;
-  opacity: 0.7;
+  background-color: blue;
 }
 
 .saveProfileEdits {
@@ -336,15 +336,8 @@ textarea {
   color: white;
 }
 
-.profilePostContainer {
-  border: 1px solid black;
-  height: 100vh;
-  width: 60rem;
-  margin-top: 5rem;
-}
 
 .userInfoAndPostContainer {
-  width: 85rem;
   display: flex;
   justify-content: space-between;
 }
@@ -412,5 +405,23 @@ display: none;
 .newPostImagePreview {
   height: 15rem;
   width: 15rem;
+  object-fit: contain;
+}
+
+.profilePostImage {
+  height: 10rem;
+  width: 10rem;
+}
+
+.profilePostContainer {
+  border: 1px solid black;
+  height: 100vh;
+  width: 60rem;
+  margin-top: 5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.profilePostImage {
   object-fit: contain;
 }

@@ -5,7 +5,7 @@ import NavBar from "./NavBar";
 import Profile from "./Profile";
 import Settings from "./Settings";
 import SignUp from "./SignUp";
-import NewPostModalPopup from './NewPostModalPopup'
+import NewPostModalPopup from "./NewPostModalPopup";
 import coverPhoto from "../images/default-cover-photo.jpg";
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
@@ -16,6 +16,7 @@ const RouteSwitch = () => {
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
   const [postNumber, setPostNumber] = useState(0);
+  const [userPosts, setUserPosts] = useState([]);
   const [bio, setBio] = useState("");
   const [fullName, setFullName] = useState("");
   const [currentProfilePicture, setCurrentProfilePicture] = useState("");
@@ -28,16 +29,14 @@ const RouteSwitch = () => {
   );
   const [currentCoverPhotoURL, setCurrentCoverPhotoURL] = useState(coverPhoto);
   const [currentProfilePicURL, setCurrentProfilePicURL] = useState("");
- const [uploadPostModal, setUploadPostModal] = useState(false);
-   // adds class to darken background color
+  const [uploadPostModal, setUploadPostModal] = useState(false);
+  // adds class to darken background color
   const [profileButtons, setProfileButtons] = useState(
     <div className="profileButtonsContainer">
       <Link to="/settings">
         <button className="editProfileButton">Edit Profile</button>
       </Link>
-      <button onClick={()=>setUploadPostModal(true)}>
-        +
-      </button>
+      <button onClick={() => setUploadPostModal(true)}>+</button>
     </div>
   );
 
@@ -79,6 +78,7 @@ const RouteSwitch = () => {
                   className="profileCoverPhoto"
                 ></img>
               );
+              setUserPosts(user.posts)
             }
           });
         })
@@ -90,7 +90,13 @@ const RouteSwitch = () => {
 
   return (
     <BrowserRouter>
-    {uploadPostModal && <NewPostModalPopup setUploadPostModal={setUploadPostModal}/>}
+      {uploadPostModal && (
+        <NewPostModalPopup
+          setUploadPostModal={setUploadPostModal}
+          userPosts={userPosts}
+          setUserPosts={setUserPosts}
+        />
+      )}
       <NavBar
         username={username}
         setUsername={setUsername}
@@ -163,6 +169,8 @@ const RouteSwitch = () => {
               setCurrentProfilePicURL={setCurrentProfilePicURL}
               profileButtons={profileButtons}
               setProfileButtons={setProfileButtons}
+              userPosts={userPosts}
+              setUserPosts={setUserPosts}
             />
           }
         />

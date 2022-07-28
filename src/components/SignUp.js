@@ -41,7 +41,7 @@ function SignUp(props) {
 
         if (docs.docs.length === 0) {
           setUsername(e.target.children[1].value);
-          await setDoc(doc(db, "users", e.target.children[1].value), {
+          await setDoc(doc(db, "users", getAuth().currentUser.email), {
             uid: user.uid,
             name: user.displayName,
             email: user.email,
@@ -50,7 +50,7 @@ function SignUp(props) {
             followers: [],
             following: [],
             bio: "",
-            posts: {},
+            posts: [],
             coverPhoto: coverPhoto
           });
       

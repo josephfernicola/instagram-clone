@@ -23,16 +23,18 @@ function NavBar(props) {
   }
 
   useEffect(() => {
+
+    
     if (isUserSignedIn()) {
       if (location.pathname === `/profile/${getAuth().currentUser.uid}`) {
-        const profilePicture = document.querySelector(".profileInfoLeft").children[0];
-        if (profilePicture) {
-          profilePicture.className = "profilePagePic"
-        }
-        const coverPhoto = document.querySelector(".profileCoverPhotoContainer").children[0];
-        if (coverPhoto) {
-        coverPhoto.className = "profileCoverPhoto";
-        }
+        // const profilePicture = document.querySelector(".profileInfoLeft").children[0];
+        // if (profilePicture) {
+        //   profilePicture.className = "profilePagePic"
+        // }
+        // const coverPhoto = document.querySelector(".profileCoverPhotoContainer").children[0];
+        // if (coverPhoto) {
+        // coverPhoto.className = "profileCoverPhoto";
+        // }
         
       } else if (location.pathname === "/settings") {
         const profilePicture = document.querySelector(".settingsProfilePic")
@@ -45,11 +47,11 @@ function NavBar(props) {
         coverPhoto.className = "settingsCoverPhoto";
         }
       } else if (location.pathname === "/instagram-clone") {
-        const profilePicture =
-          document.querySelector(".pictureAndName").children[0];
-          if (profilePicture) {
-        profilePicture.className = "homepageProfilePic";
-          }
+        // const profilePicture =
+        //   document.querySelector(".pictureAndName").children[0];
+        //   if (profilePicture) {
+        // profilePicture.className = "homepageProfilePic";
+        //   }
       }
     }
   }, [location, isUserSignedIn]);

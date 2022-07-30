@@ -7,7 +7,7 @@ import {
   where,
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   getAuth,
   GoogleAuthProvider,
@@ -33,9 +33,44 @@ function Home(props) {
     setFullName,
     currentProfilePicture,
     setCurrentProfilePicture,
-    currentProfilePicURL
+    currentProfilePicURL,
+    homepageName,
+    homepageUsername,
+    homepageFollowing,
+    homepageFollowers,
+    homepagePostNumber,
+    homepageProfilePic
   } = props;
+const [loading, setLoading] = useState(true);
 
+
+  useEffect(() => {
+    async function pageLoadFunct() {
+      const users = await getFirestore();
+      const usersRef = await collection(users, "users");
+      getDocs(usersRef)
+        .then((snapshot) => {
+          let users = [];
+          snapshot.docs.forEach((doc) => {
+            users.push({ ...doc.data(), id: doc.id });
+          });
+
+          //console.log("Signed in Email" , getAuth().currentUser.email)
+          users.forEach((user) => {
+            if (user.email === getAuth().currentUser.email) {
+              //console.log("true" , user.email)
+     
+              setLoading(false);
+            }
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    pageLoadFunct();
+    initFirebaseAuth();
+  }, []);
 
   // Initialize firebase auth
   function initFirebaseAuth() {
@@ -51,25 +86,25 @@ function Home(props) {
         <div className="sidebarContainer">
           <Link to={`/profile/${getAuth().currentUser.uid}`}>
             <div className="pictureAndName">
-              {currentProfilePicture}
+              {homepageProfilePic}
               <div className="name">
-                <div className="fullName">{fullName}</div>
-                <div className="username">@{username}</div>
+                <div className="fullName">{homepageName}</div>
+                <div className="username">@{homepageUsername}</div>
               </div>
             </div>
           </Link>
           <div className="followersAndPosts">
             <div className="following">
-              <div className="followingNumber">{following}</div>
+              <div className="followingNumber">{homepageFollowing}</div>
               <div>Following</div>
             </div>
 
             <div className="followers">
-              <div className="followersNumber">{followers}</div>
+              <div className="followersNumber">{homepageFollowers}</div>
               <div>Followers</div>
             </div>
             <div className="posts">
-              <div className="postsNumber">{postNumber}</div>
+              <div className="postsNumber">{homepagePostNumber}</div>
               <div>Posts</div>
             </div>
             <div className="iconAndNewPostButton">
@@ -122,16 +157,18 @@ function Home(props) {
       alert(err.message);
     }
   }
-  useEffect(() => {
-    initFirebaseAuth();
-  }, []);
 
-  return (
-    <div className="homePage">
-      <div className="postsContainer"></div>
-      {homePageSidebar}
-    </div>
-  );
+
+
+if (!loading) {
+    return (
+      <div className="homePage">
+        <div className="postsContainer"></div>
+        {homePageSidebar}
+      </div>
+    );
+}
+
 }
 
 export default Home;

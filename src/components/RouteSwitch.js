@@ -14,6 +14,12 @@ import CurrentPostComments from "./CurrentPostComments";
 
 const RouteSwitch = () => {
   const [homePageSidebar, setHomePageSidebar] = useState("");
+  const [homepageName, setHomepageName] = useState();
+  const [homepageProfilePic, setHomepageProfilePic] = useState();
+  const [homepageUsername, setHomepageUsername] = useState();
+  const [homepageFollowers, setHomepageFollowers] = useState();
+  const [homepageFollowing, setHomepageFollowing] = useState();
+  const [homepagePostNumber, setHomepagePostNumber] = useState();
   const [username, setUsername] = useState("");
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
@@ -81,6 +87,18 @@ const RouteSwitch = () => {
                 ></img>
               );
               setUserPosts(user.posts);
+              setHomepageProfilePic(
+                <img
+                  src={user.photoURL}
+                  alt="Default Profile"
+                  className="homepageProfilePic"
+                ></img>
+              );
+              setHomepagePostNumber(user.posts.length)
+              setHomepageName(user.name);
+              setHomepageUsername(user.username)
+              setHomepageFollowing(user.following.length)
+              setHomepageFollowers(user.followers.length)
             }
           });
         })
@@ -123,6 +141,12 @@ const RouteSwitch = () => {
             <Home
               homePageSidebar={homePageSidebar}
               setHomePageSidebar={setHomePageSidebar}
+              homepageProfilePic={homepageProfilePic}
+              homepageName={homepageName}
+              homepageUsername={homepageUsername}
+              homepageFollowers={homepageFollowers}
+              homepageFollowing={homepageFollowing}
+              homepagePostNumber={homepagePostNumber}
               username={username}
               setUsername={setUsername}
               followers={followers}
@@ -155,12 +179,16 @@ const RouteSwitch = () => {
           element={
             <Profile
               bio={bio}
+              setBio={setBio}
               fullName={fullName}
+              setFullName={setFullName}
               username={username}
+              setUsername={setUsername}
               postNumber={postNumber}
               following={following}
+              setFollowing={setFollowing}
+              setFollowers={setFollowers}
               followers={followers}
-              setBio={setBio}
               currentProfilePicture={currentProfilePicture}
               setCurrentProfilePicture={setCurrentProfilePicture}
               currentCoverPhoto={currentCoverPhoto}
@@ -199,11 +227,7 @@ const RouteSwitch = () => {
         />
         <Route
           path="post/:id/:id"
-          element={
-            <Post
-              currentProfilePicture={currentProfilePicture}
-            />
-          }
+          element={<Post currentProfilePicture={currentProfilePicture} />}
         ></Route>
       </Routes>
     </BrowserRouter>

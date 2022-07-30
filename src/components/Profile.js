@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import ProfilePostContainer from './ProfilePostContainer'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 
 function Profile(props) {
   const {
@@ -26,10 +26,15 @@ function Profile(props) {
     profileButtons,
     setProfileButtons,
     userPosts, 
-    setUserPosts
+    setUserPosts,
+    setCurrentPostURL
   } = props;
   const location = useLocation();
 
+
+  useEffect(() => {
+   
+  }, [])
 
   return (
     <div className="profileContainer">
@@ -52,7 +57,7 @@ function Profile(props) {
               <div className="bioDescription">{bio}</div>
             </div>
           </div>
-          {<ProfilePostContainer userPosts={userPosts} setUserPosts={setUserPosts}/>}
+          {<ProfilePostContainer userPosts={userPosts} setUserPosts={setUserPosts} />}
         </div>
       </div>
       <div className="profileButtons">{profileButtons}</div>

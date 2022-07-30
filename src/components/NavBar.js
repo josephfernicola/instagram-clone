@@ -3,12 +3,14 @@ import { AiFillHome, AiOutlineHeart } from "react-icons/ai";
 import { BsChat, BsPlusSquare } from "react-icons/bs";
 import { FaRegUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { getAuth, signOut } from "firebase/auth";
 import { useLocation, useNavigate } from "react-router-dom";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+import CurrentPostComments from './CurrentPostComments';
 
 function NavBar(props) {
-  const { setCurrentCoverPhoto, setCurrentProfilePicture } = props;
+  const { setCurrentCoverPhoto, setCurrentProfilePicture, setUserFullNameOnPost, setUserFullUsernameOnPost, setCurrentPostCaption, setCurrentPostComments, currentPostURL } = props;
   const [profileOptionsMenu, setProfileOptionsMenu] = useState("");
   const [toggleProfileOptionsMenu, setToggleProfileOptionsMenu] =
     useState(false);
@@ -51,6 +53,7 @@ function NavBar(props) {
       }
     }
   }, [location, isUserSignedIn]);
+
   // Returns true if a user is signed-in.
   function isUserSignedIn() {
     return !!getAuth().currentUser;

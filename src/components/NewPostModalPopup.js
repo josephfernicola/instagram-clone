@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import {v4 as uuid} from 'uuid';
 
 const PopUp = (props) => {
   // function that takes boolean as param to conditionally display popup
@@ -65,15 +66,19 @@ const PopUp = (props) => {
     uploadBytes(imageRef, selectedImageObj)
       .then(() => {
         alert("Image Uploaded!");
-
+        
         getDownloadURL(imageRef)
           .then((url) => {
             const db = getFirestore();
             const usersRef = doc(db, "users", getAuth().currentUser.email);
+            const newPostId = uuid();
             updateDoc(usersRef, {
               posts: arrayUnion({
                 image: url,
                 caption: e.target.children[3].value,
+                postId: newPostId,
+                comments: [],
+                likes: 0
               }),
             });
             setUserPosts([
@@ -81,6 +86,9 @@ const PopUp = (props) => {
               {
                 image: url,
                 caption: e.target.children[3].value,
+                postId: newPostId,
+                comments: [],
+                likes: 0
               },
             ]);
           })

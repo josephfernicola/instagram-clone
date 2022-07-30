@@ -43,27 +43,6 @@ function Home(props) {
     onAuthStateChanged(getAuth(), authStateObserver);
   }
 
-  // function viewFollowing() {
-  //   const users = getFirestore();
-  //   const usersRef = collection(users, "users");
-
-  //   getDocs(usersRef)
-  //     .then((snapshot) => {
-  //       let users = [];
-  //       snapshot.docs.forEach((doc) => {
-  //         users.push({ ...doc.data(), id: doc.id });
-  //       });
-  //       //console.log("users" , users)
-  //       users.forEach((name) => {
-  //         if (name.name === getAuth().currentUser.displayName) {
-  //         }
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }
-
   // Triggers when the auth state change for instance when the user signs-in or signs-out.
   function authStateObserver(user) {
     if (user) {

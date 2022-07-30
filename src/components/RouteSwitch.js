@@ -5,10 +5,12 @@ import NavBar from "./NavBar";
 import Profile from "./Profile";
 import Settings from "./Settings";
 import SignUp from "./SignUp";
+import Post from "./Post";
 import NewPostModalPopup from "./NewPostModalPopup";
 import coverPhoto from "../images/default-cover-photo.jpg";
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
+import CurrentPostComments from "./CurrentPostComments";
 
 const RouteSwitch = () => {
   const [homePageSidebar, setHomePageSidebar] = useState("");
@@ -78,7 +80,7 @@ const RouteSwitch = () => {
                   className="profileCoverPhoto"
                 ></img>
               );
-              setUserPosts(user.posts)
+              setUserPosts(user.posts);
             }
           });
         })
@@ -195,6 +197,14 @@ const RouteSwitch = () => {
             />
           }
         />
+        <Route
+          path="post/:id/:id"
+          element={
+            <Post
+              currentProfilePicture={currentProfilePicture}
+            />
+          }
+        ></Route>
       </Routes>
     </BrowserRouter>
   );

@@ -12,17 +12,33 @@ import {
   arrayUnion,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 
 const ProfilePostContainer = (props) => {
   const { userPosts, setUserPosts } = props;
-  console.log(userPosts)
+
+  const navigate = useNavigate();
+
+  const switchToPostPage = (e) => {
+    userPosts.forEach((image) => {
+      if (image.image === e.target.src) {
+        navigate(`/post/${getAuth().currentUser.uid}/${image.postId}`, {
+          state: { image: e.target.src },
+        });
+      }
+    });
+  };
   return (
     <div className="profilePostContainer">
-      {userPosts.map(function(arr, index) {
+      {userPosts.map(function (arr, index) {
         return (
           <div key={index} className="individualPost">
-              <img className="profilePostImage" src={arr.image} alt="Profile Post"></img>
+            <img
+              className="profilePostImage"
+              src={arr.image}
+              alt="Profile Post"
+              onClick={switchToPostPage}
+            ></img>
           </div>
         );
       })}

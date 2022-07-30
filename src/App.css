@@ -282,7 +282,7 @@ textarea {
 .addPostButton:hover,
 .editProfileButton:hover {
   cursor: pointer;
-  background-color: blue;
+  background-color: rgb(233, 227, 227);
 }
 
 .saveProfileEdits {
@@ -423,5 +423,26 @@ display: none;
 }
 
 .profilePostImage {
+  object-fit: contain;
+}
+
+.postPageContainer {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ height: 100vh;
+}
+
+.individualPostContainer {
+  border: 1px solid black;
+  width: 80%;
+  height: 100%; 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.currentPost {
+  height: 40rem;
+  width: 40rem;
   object-fit: contain;
 }

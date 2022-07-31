@@ -184,6 +184,7 @@ const RouteSwitch = () => {
           path="profile/:id"
           element={
             <Profile
+              setUploadPostModal={setUploadPostModal}
               bio={bio}
               setBio={setBio}
               fullName={fullName}

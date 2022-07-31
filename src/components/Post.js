@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getAuth } from "firebase/auth";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import CurrentPostComments from "./CurrentPostComments";
 
@@ -13,6 +13,7 @@ const Post = (props) => {
   const [currentPostURL, setCurrentPostURL] = useState();
   const [loading, setLoading] = useState(true);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadUserData() {
@@ -52,6 +53,26 @@ const Post = (props) => {
     loadUserData();
   }, []);
 
+  const switchToProfile = async (e) => {
+    const users = await getFirestore();
+    const usersRef = await collection(users, "users");
+    getDocs(usersRef)
+      .then((snapshot) => {
+        let users = [];
+        snapshot.docs.forEach((doc) => {
+          users.push({ ...doc.data(), id: doc.id });
+        });
+        users.forEach((user) => {
+          if (location.pathname.includes(`${user.uid}`)) {
+            navigate(`/profile/${user.uid}`);
+          }
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   if (!loading) {
     return (
       <div className="postPageContainer">
@@ -66,10 +87,14 @@ const Post = (props) => {
           <div className="rightSideComments">
             <div className="posterNameAndCaption">
               <div className="imageAndName">
+                <div onClick={switchToProfile}>
                 {currentProfilePicture}
+                </div>
                 <div className="nameAndUsername">
-                  <div className="userFullNameOnPost">{userFullNameOnPost}</div>
-                  <div className="userFullUsernameOnPost">
+                  <div className="userFullNameOnPost" onClick={switchToProfile}>
+                    {userFullNameOnPost}
+                  </div>
+                  <div className="userFullUsernameOnPost" onClick={switchToProfile}>
                     @{userFullUsernameOnPost}
                   </div>
                 </div>

@@ -70,14 +70,33 @@ function NavBar(props) {
   function isUserSignedIn() {
     return !!getAuth().currentUser;
   }
-
+const switchToYourProfile = async () => {
+  console.log(getAuth().currentUser.email)
+  const users = await getFirestore();
+    const usersRef = await collection(users, "users");
+    getDocs(usersRef)
+      .then((snapshot) => {
+        let users = [];
+        snapshot.docs.forEach((doc) => {
+          users.push({ ...doc.data(), id: doc.id });
+        });
+        users.forEach((user) => {
+          if (user.email === getAuth().currentUser.email) {
+            navigate(`/profile/${user.uid}`);
+          }
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+}
   const profileOptions = () => {
     if (!toggleProfileOptionsMenu && isUserSignedIn()) {
       setProfileOptionsMenu(
         <div className="profileOptionsMenu">
-          <Link to={`/profile/${getAuth().currentUser.uid}`}>
-            <div className="navBarProfileButton">Profile</div>
-          </Link>
+
+            <div className="navBarProfileButton" onClick={switchToYourProfile}>Profile</div>
+
           <div className="logOutButton" onClick={logUserOut}>
             Log Out
           </div>
@@ -136,7 +155,6 @@ function NavBar(props) {
 
   };
   const switchToOtherProfile = async (e) => {
-    console.log(e.target.textContent)
     const users = await getFirestore();
     const usersRef = await collection(users, "users");
     getDocs(usersRef)

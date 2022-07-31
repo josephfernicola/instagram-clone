@@ -1,11 +1,12 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import ProfilePostContainer from "./ProfilePostContainer";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 
 function Profile(props) {
   const {
+    setUploadPostModal,
     bio,
     setBio,
     currentProfilePicture,
@@ -33,6 +34,28 @@ function Profile(props) {
   } = props;
   const location = useLocation();
   const [letPageLoad, setLetPageLoad] = useState(false);
+  const [reRender, setreRender] = useState(false);
+
+  // useEffect(() => {
+  //   const changeProfileButtons = async () => {
+  //   const users = await getFirestore();
+  //       const usersRef = await collection(users, "users");
+  //       getDocs(usersRef)
+  //         .then((snapshot) => {
+  //           let users = [];
+  //           snapshot.docs.forEach((doc) => {
+  //             users.push({ ...doc.data(), id: doc.id });
+  //           });
+  //           users.forEach((user) => {
+  //             if (user.email !== getAuth().currentUser.email)
+  //           });
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //         });
+  //       }
+  //       changeProfileButtons();
+  // }, [])
 
   useEffect(() => {
     async function pageLoadFunct() {
@@ -66,8 +89,24 @@ function Profile(props) {
               setFollowing(user.following.length);
               setBio(user.bio);
               setUserPosts(user.posts);
-              setPostNumber(user.posts.length)
+              setPostNumber(user.posts.length);
               setLetPageLoad(true);
+              setProfileButtons(
+                <div className="profileButtonsContainer">
+                  <Link to="/settings">
+                    <button className="editProfileButton">Edit Profile</button>
+                  </Link>
+                  <button onClick={() => setUploadPostModal(true)}>+</button>
+                </div>
+              );
+              if (user.email !== getAuth().currentUser.email) {
+                setProfileButtons(
+                  <div className="profileButtonsContainer">
+                    <button className="followUnfollowButton">Follow</button>
+                    <button className="messageButton">Message</button>
+                  </div>
+                );
+              }
             }
           });
         })
@@ -75,8 +114,10 @@ function Profile(props) {
           console.log(err);
         });
     }
-    pageLoadFunct();
-  }, []);
+    if (location.pathname.includes("profile")) {
+      pageLoadFunct();
+    }
+  }, [location]);
 
   if (letPageLoad) {
     return (
@@ -116,3 +157,5 @@ function Profile(props) {
 }
 
 export default Profile;
+
+//when already on profile page, cant switch to another profile on the search. doesnt render quickly enough

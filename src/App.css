@@ -32,7 +32,7 @@ a {
   justify-content: space-around;
   align-items: center;
 }
-.homeNavContainer > input {
+.searchInputAndResults > input {
   margin-right: 5rem;
 }
 
@@ -336,7 +336,6 @@ textarea {
   color: white;
 }
 
-
 .userInfoAndPostContainer {
   display: flex;
   justify-content: space-between;
@@ -399,7 +398,7 @@ textarea {
 }
 
 .newPostAndCaptionContainer > input {
-display: none;
+  display: none;
 }
 
 .newPostImagePreview {
@@ -427,15 +426,15 @@ display: none;
 }
 
 .postPageContainer {
- display: flex;
- justify-content: center;
- align-items: center;
- height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 .individualPostContainer {
   width: 60%;
-  height: 100%; 
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -482,7 +481,23 @@ display: none;
 .posterNameAndCaption {
   display: flex;
   flex-direction: column;
-justify-content: space-around;
-align-items: center;
+  justify-content: space-around;
+  align-items: center;
 }
 
+.searchMatchList {
+  display: flex;
+  flex-direction: column;
+justify-content: center;
+  position: absolute;
+  z-index: 100;
+  top: 3rem;
+}
+.searchMatchListContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.searchResult:hover {
+cursor: pointer;
+}

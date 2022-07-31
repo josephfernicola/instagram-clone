@@ -6,15 +6,35 @@ import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { getAuth, signOut } from "firebase/auth";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getFirestore, collection, getDocs, Firestore } from "firebase/firestore";
-import CurrentPostComments from './CurrentPostComments';
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  where,
+  query,
+  Firestore,
+  orderBy,
+  limit,
+  startAt,
+  endAt,
+  QuerySnapshot,
+} from "firebase/firestore";
+import CurrentPostComments from "./CurrentPostComments";
 
 function NavBar(props) {
-  const { setCurrentCoverPhoto, setCurrentProfilePicture, setUserFullNameOnPost, setUserFullUsernameOnPost, setCurrentPostCaption, setCurrentPostComments, currentPostURL } = props;
+  const {
+    setCurrentCoverPhoto,
+    setCurrentProfilePicture,
+    setUserFullNameOnPost,
+    setUserFullUsernameOnPost,
+    setCurrentPostCaption,
+    setCurrentPostComments,
+    currentPostURL,
+  } = props;
   const [profileOptionsMenu, setProfileOptionsMenu] = useState("");
   const [toggleProfileOptionsMenu, setToggleProfileOptionsMenu] =
     useState(false);
-
+  const [matchList, setMatchList] = useState([]);
 
   let location = useLocation();
   const navigate = useNavigate();
@@ -24,30 +44,19 @@ function NavBar(props) {
   }
 
   useEffect(() => {
-
-    
     if (isUserSignedIn()) {
-      if (location.pathname === `/profile/${getAuth().currentUser.uid}`) {
-        // const profilePicture = document.querySelector(".profileInfoLeft").children[0];
-        // if (profilePicture) {
-        //   profilePicture.className = "profilePagePic"
-        // }
-        // const coverPhoto = document.querySelector(".profileCoverPhotoContainer").children[0];
-        // if (coverPhoto) {
-        // coverPhoto.className = "profileCoverPhoto";
-        // }
-        
-      } else if (location.pathname === "/settings") {
+      if (location.pathname === "/settings") {
         const profilePicture = document.querySelector(".settingsProfilePic")
           .children[0];
-          if (profilePicture) {
-        profilePicture.className = "settingsProfilePic";
-          }
-          const coverPhoto = document.querySelector(".settingsCoverPhotoSmall").children[0];
-        if (coverPhoto) {
-        coverPhoto.className = "settingsCoverPhoto";
+        if (profilePicture) {
+          profilePicture.className = "settingsProfilePic";
         }
-      } else if (location.pathname === "/instagram-clone") {
+        const coverPhoto = document.querySelector(".settingsCoverPhotoSmall")
+          .children[0];
+        if (coverPhoto) {
+          coverPhoto.className = "settingsCoverPhoto";
+        }
+        // } else if (location.pathname === "/instagram-clone") {
         // const profilePicture =
         //   document.querySelector(".pictureAndName").children[0];
         //   if (profilePicture) {
@@ -93,15 +102,60 @@ function NavBar(props) {
   const logUserOut = () => {
     // Sign out of Firebase.
     signOut(getAuth());
-    navigate("/instagram-clone")
-
+    navigate("/instagram-clone");
   };
 
   const searchInputChange = async (e) => {
-    //console.log(e.target.value)
-    const fire = getFirestore()
-    //let query = fire.collection("users").where("name", ">=")
-  }
+    let searchMatches = [];
+    const users = await getFirestore();
+    const usersRef = await collection(users, "users");
+    const q = await query(usersRef, orderBy("username"), limit(5));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      searchMatches.push(doc.data().username);
+    });
+    let matches = searchMatches.filter((match) => {
+      const regex = new RegExp(`^${e.target.value}`, "gi");
+      return match.match(regex);
+    });
+    setMatchList(
+      matches.map((result, index) => {
+        return (
+          <div key={index} className="searchResult">
+            <div onClick={switchToOtherProfile}>{result}</div>
+          </div>
+        );
+      })
+    );
+    console.log("matches", matches);
+    if (e.target.value === "") {
+      matches = [];
+      searchMatches = [];
+      setMatchList([]);
+    }
+
+  };
+  const switchToOtherProfile = async (e) => {
+    console.log(e.target.textContent)
+    const users = await getFirestore();
+    const usersRef = await collection(users, "users");
+    getDocs(usersRef)
+      .then((snapshot) => {
+        let users = [];
+        snapshot.docs.forEach((doc) => {
+          users.push({ ...doc.data(), id: doc.id });
+        });
+        users.forEach((user) => {
+          if (user.username === e.target.textContent) {
+            setMatchList([]);
+            navigate(`/profile/${user.uid}`);
+          }
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <nav className="homeNav">
@@ -116,14 +170,17 @@ function NavBar(props) {
             <div className="instagramTitle">Instagram</div>
           </div>
         </Link>
-        <label htmlFor="search"></label>
-        <input
-          type="text"
-          name="search"
-          placeholder="Search"
-          maxLength="30"
-          onChange={searchInputChange}
-        ></input>
+        <div className="searchInputAndResults">
+          <label htmlFor="search"></label>
+          <input
+            type="text"
+            name="search"
+            className="userSearch"
+            placeholder="Search"
+            maxLength="30"
+            onChange={searchInputChange}
+          ></input>
+        </div>
         <div className="navBarIcons">
           <Link to="/instagram-clone">
             <div className="homeIcon">{<AiFillHome />}</div>
@@ -136,6 +193,9 @@ function NavBar(props) {
             {profileOptionsMenu}
           </div>
         </div>
+      </div>
+      <div className="searchMatchListContainer">
+        <div className="searchMatchList">{matchList}</div>
       </div>
     </nav>
   );

@@ -70,9 +70,9 @@ function NavBar(props) {
   function isUserSignedIn() {
     return !!getAuth().currentUser;
   }
-const switchToYourProfile = async () => {
-  console.log(getAuth().currentUser.email)
-  const users = await getFirestore();
+  const switchToYourProfile = async () => {
+    console.log(getAuth().currentUser.email);
+    const users = await getFirestore();
     const usersRef = await collection(users, "users");
     getDocs(usersRef)
       .then((snapshot) => {
@@ -89,13 +89,14 @@ const switchToYourProfile = async () => {
       .catch((err) => {
         console.log(err);
       });
-}
+  };
   const profileOptions = () => {
     if (!toggleProfileOptionsMenu && isUserSignedIn()) {
       setProfileOptionsMenu(
         <div className="profileOptionsMenu">
-
-            <div className="navBarProfileButton" onClick={switchToYourProfile}>Profile</div>
+          <div className="navBarProfileButton" onClick={switchToYourProfile}>
+            Profile
+          </div>
 
           <div className="logOutButton" onClick={logUserOut}>
             Log Out
@@ -131,30 +132,47 @@ const switchToYourProfile = async () => {
     const q = await query(usersRef, orderBy("username"), limit(5));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      searchMatches.push(doc.data().username);
+      searchMatches.push({
+        username: doc.data().username,
+        profilePic: doc.data().photoURL,
+        fullName: doc.data().name,
+      });
     });
-    let matches = searchMatches.filter((match) => {
+    console.log(searchMatches);
+    let usernameMatches = searchMatches.filter((match) => {
       const regex = new RegExp(`^${e.target.value}`, "gi");
-      return match.match(regex);
+      return match.fullName.match(regex);
     });
     setMatchList(
-      matches.map((result, index) => {
+      usernameMatches.map((result, index) => {
         return (
-          <div key={index} className="searchResult">
-            <div onClick={switchToOtherProfile}>{result}</div>
+          <div
+            key={index}
+            className="searchResult"
+            onClick={switchToOtherProfile}
+          >
+            <div className="searchImageAndFullName">
+              <img
+                src={result.profilePic}
+                alt="user profile"
+                className="searchPicture"
+              ></img>
+              <div className="searchFullName">{result.fullName}</div>
+            </div>
+            <div>{result.username}</div>
           </div>
         );
       })
     );
-    console.log("matches", matches);
+
     if (e.target.value === "") {
-      matches = [];
+      usernameMatches = [];
       searchMatches = [];
       setMatchList([]);
     }
-
   };
   const switchToOtherProfile = async (e) => {
+    console.log("click" , e.target.parentElement.parentElement.children[1].textContent);
     const users = await getFirestore();
     const usersRef = await collection(users, "users");
     getDocs(usersRef)
@@ -164,7 +182,9 @@ const switchToYourProfile = async () => {
           users.push({ ...doc.data(), id: doc.id });
         });
         users.forEach((user) => {
-          if (user.username === e.target.textContent) {
+          if (
+            user.username === e.target.parentElement.parentElement.children[1].textContent
+          ) {
             setMatchList([]);
             navigate(`/profile/${user.uid}`);
           }

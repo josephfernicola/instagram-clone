@@ -66,7 +66,7 @@ function Home(props) {
               {homepageProfilePic}
               <div className="name">
                 <div className="fullName">{homepageName}</div>
-                <div className="username">@{homepageUsername}</div>
+                <div className="username">{homepageUsername}</div>
               </div>
             </div>
           </Link>

@@ -129,7 +129,7 @@ function Profile(props) {
               {currentProfilePicture}
               <div className="name">
                 <div className="fullName">{fullName}</div>
-                <div className="username">@{username}</div>
+                <div className="username">{username}</div>
               </div>
               <div>{postNumber} posts</div>
               <div className="followersAndFollowingContainter">

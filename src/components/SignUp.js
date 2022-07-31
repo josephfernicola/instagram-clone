@@ -45,7 +45,7 @@ function SignUp(props) {
             uid: user.uid,
             name: user.displayName,
             email: user.email,
-            username: e.target.children[1].value,
+            username: `@${e.target.children[1].value}`,
             photoURL: user.photoURL,
             followers: [],
             following: [],

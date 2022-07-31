@@ -66,6 +66,7 @@ function Profile(props) {
               setFollowing(user.following.length);
               setBio(user.bio);
               setUserPosts(user.posts);
+              setPostNumber(user.posts.length)
               setLetPageLoad(true);
             }
           });

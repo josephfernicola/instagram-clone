@@ -54,7 +54,7 @@ const RouteSwitch = () => {
   }
 
   useEffect(() => {
-    if (isUserSignedIn) {
+    if (isUserSignedIn()) {
       const users = getFirestore();
       const usersRef = collection(users, "users");
       getDocs(usersRef)
@@ -142,11 +142,17 @@ const RouteSwitch = () => {
               homePageSidebar={homePageSidebar}
               setHomePageSidebar={setHomePageSidebar}
               homepageProfilePic={homepageProfilePic}
+              setHomepageProfilePic={setHomepageProfilePic}
               homepageName={homepageName}
+              setHomepageName={setHomepageName}
               homepageUsername={homepageUsername}
+              setHomepageUsername={setHomepageUsername}
               homepageFollowers={homepageFollowers}
+              setHomepageFollowers={setHomepageFollowers}
               homepageFollowing={homepageFollowing}
+              setHomepageFollowing={setHomepageFollowing}
               homepagePostNumber={homepagePostNumber}
+              setHomepagePostNumber={setHomepagePostNumber}
               username={username}
               setUsername={setUsername}
               followers={followers}
@@ -185,6 +191,7 @@ const RouteSwitch = () => {
               username={username}
               setUsername={setUsername}
               postNumber={postNumber}
+              setPostNumber={setPostNumber}
               following={following}
               setFollowing={setFollowing}
               setFollowers={setFollowers}

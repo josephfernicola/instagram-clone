@@ -6,7 +6,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   getAuth,
@@ -35,53 +35,30 @@ function Home(props) {
     setCurrentProfilePicture,
     currentProfilePicURL,
     homepageName,
+    setHomepageName,
     homepageUsername,
+    setHomepageUsername,
     homepageFollowing,
+    setHomepageFollowing,
     homepageFollowers,
+    setHomepageFollowers,
     homepagePostNumber,
-    homepageProfilePic
+    setHomepagePostNumber,
+    homepageProfilePic,
+    setHomepageProfilePic,
   } = props;
-const [loading, setLoading] = useState(true);
-
-
+  let location = useLocation();
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    async function pageLoadFunct() {
-      const users = await getFirestore();
-      const usersRef = await collection(users, "users");
-      getDocs(usersRef)
-        .then((snapshot) => {
-          let users = [];
-          snapshot.docs.forEach((doc) => {
-            users.push({ ...doc.data(), id: doc.id });
-          });
-
-          //console.log("Signed in Email" , getAuth().currentUser.email)
-          users.forEach((user) => {
-            if (user.email === getAuth().currentUser.email) {
-              //console.log("true" , user.email)
-     
-              setLoading(false);
-            }
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-    pageLoadFunct();
     initFirebaseAuth();
   }, []);
 
-  // Initialize firebase auth
-  function initFirebaseAuth() {
-    // Listen to auth state changes.
-    onAuthStateChanged(getAuth(), authStateObserver);
+  function isUserSignedIn() {
+    return !!getAuth().currentUser;
   }
 
-  // Triggers when the auth state change for instance when the user signs-in or signs-out.
-  function authStateObserver(user) {
-    if (user) {
-      // User is signed in.
+  useEffect(() => {
+    if (isUserSignedIn() && !loading) {
       setHomePageSidebar(
         <div className="sidebarContainer">
           <Link to={`/profile/${getAuth().currentUser.uid}`}>
@@ -98,7 +75,6 @@ const [loading, setLoading] = useState(true);
               <div className="followingNumber">{homepageFollowing}</div>
               <div>Following</div>
             </div>
-
             <div className="followers">
               <div className="followersNumber">{homepageFollowers}</div>
               <div>Followers</div>
@@ -114,6 +90,85 @@ const [loading, setLoading] = useState(true);
           </div>
         </div>
       );
+    }
+  }, [isUserSignedIn(), loading]);
+
+  useEffect(() => {
+    async function changeHomepageInfo() {
+      const users = await getFirestore();
+      const usersRef = await collection(users, "users");
+      getDocs(usersRef)
+        .then((snapshot) => {
+          let users = [];
+          snapshot.docs.forEach((doc) => {
+            users.push({ ...doc.data(), id: doc.id });
+          });
+          users.forEach((user) => {
+            if (user.email === getAuth().currentUser.email) {
+              setHomepagePostNumber(user.posts.length);
+              setHomepageName(user.name);
+              setHomepageUsername(user.username);
+              setHomepageFollowers(user.followers.length);
+              setHomepageFollowing(user.following.length);
+              setHomepageProfilePic(
+                <img
+                  src={user.photoURL}
+                  alt="Default Profile"
+                  className="homepageProfilePic"
+                ></img>
+              );
+              setLoading(false);
+            }
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    changeHomepageInfo();
+  }, []);
+
+  // Initialize firebase auth
+  function initFirebaseAuth() {
+    // Listen to auth state changes.
+    onAuthStateChanged(getAuth(), authStateObserver);
+  }
+
+  // Triggers when the auth state change for instance when the user signs-in or signs-out.
+  function authStateObserver(user) {
+    if (user) {
+      // User is signed in.
+      async function changeHomepageInfo() {
+        const users = await getFirestore();
+        const usersRef = await collection(users, "users");
+        getDocs(usersRef)
+          .then((snapshot) => {
+            let users = [];
+            snapshot.docs.forEach((doc) => {
+              users.push({ ...doc.data(), id: doc.id });
+            });
+            users.forEach((user) => {
+              if (user.email === getAuth().currentUser.email) {
+                setHomepagePostNumber(user.posts.length);
+                setHomepageName(user.name);
+                setHomepageUsername(user.username);
+                setHomepageFollowers(user.followers.length);
+                setHomepageFollowing(user.following.length);
+                setHomepageProfilePic(
+                  <img
+                    src={user.photoURL}
+                    alt="Default Profile"
+                    className="homepageProfilePic"
+                  ></img>
+                );
+              }
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+      changeHomepageInfo();
     } else {
       // User is not signed in.
       setHomePageSidebar(
@@ -158,17 +213,12 @@ const [loading, setLoading] = useState(true);
     }
   }
 
-
-
-if (!loading) {
-    return (
-      <div className="homePage">
-        <div className="postsContainer"></div>
-        {homePageSidebar}
-      </div>
-    );
-}
-
+  return (
+    <div className="homePage">
+      <div className="postsContainer"></div>
+      {homePageSidebar}
+    </div>
+  );
 }
 
 export default Home;

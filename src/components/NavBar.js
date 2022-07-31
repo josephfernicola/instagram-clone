@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { getAuth, signOut } from "firebase/auth";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, Firestore } from "firebase/firestore";
 import CurrentPostComments from './CurrentPostComments';
 
 function NavBar(props) {
@@ -14,6 +14,7 @@ function NavBar(props) {
   const [profileOptionsMenu, setProfileOptionsMenu] = useState("");
   const [toggleProfileOptionsMenu, setToggleProfileOptionsMenu] =
     useState(false);
+
 
   let location = useLocation();
   const navigate = useNavigate();
@@ -96,6 +97,12 @@ function NavBar(props) {
 
   };
 
+  const searchInputChange = async (e) => {
+    //console.log(e.target.value)
+    const fire = getFirestore()
+    //let query = fire.collection("users").where("name", ">=")
+  }
+
   return (
     <nav className="homeNav">
       <div className="homeNavContainer">
@@ -115,6 +122,7 @@ function NavBar(props) {
           name="search"
           placeholder="Search"
           maxLength="30"
+          onChange={searchInputChange}
         ></input>
         <div className="navBarIcons">
           <Link to="/instagram-clone">

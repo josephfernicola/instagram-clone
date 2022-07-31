@@ -104,6 +104,7 @@ function Profile(props) {
               <ProfilePostContainer
                 userPosts={userPosts}
                 setUserPosts={setUserPosts}
+                currentProfilePicture={currentProfilePicture}
               />
             }
           </div>

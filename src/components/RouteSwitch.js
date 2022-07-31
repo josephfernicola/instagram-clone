@@ -234,7 +234,7 @@ const RouteSwitch = () => {
         />
         <Route
           path="post/:id/:id"
-          element={<Post currentProfilePicture={currentProfilePicture} />}
+          element={<Post currentProfilePicture={currentProfilePicture} setCurrentProfilePicture={setCurrentProfilePicture} />}
         ></Route>
       </Routes>
     </BrowserRouter>

@@ -405,7 +405,7 @@ display: none;
 .newPostImagePreview {
   height: 15rem;
   width: 15rem;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .profilePostImage {
@@ -423,7 +423,7 @@ display: none;
 }
 
 .profilePostImage {
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .postPageContainer {
@@ -434,22 +434,55 @@ display: none;
 }
 
 .individualPostContainer {
-  border: 1px solid black;
-  width: 80%;
+  width: 60%;
   height: 100%; 
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.currentPost {
-  height: 40rem;
-  width: 40rem;
-  object-fit: contain;
-}
-
-.loadingPage {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
+.currentPost {
+  height: 32rem;
+  width: 32rem;
+  object-fit: cover;
+}
+
+.rightSideComments {
+  height: 32rem;
+  width: 100%;
+  display: grid;
+  grid-template-rows: 0.5fr 1fr;
+  border: 1px solid black;
+}
+
+.individualComment {
+  border: 1px solid black;
+  display: flex;
+  justify-content: space-between;
+}
+
+.imageAndName {
+  display: flex;
+  justify-content: center;
+}
+
+.nameAndUsername {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.postPageProfilePic {
+  height: 6rem;
+  width: 6rem;
+  border-radius: 10rem;
+  object-fit: cover;
+  margin-right: 1rem;
+}
+
+.posterNameAndCaption {
+  display: flex;
+  flex-direction: column;
+justify-content: space-around;
+align-items: center;
+}
+

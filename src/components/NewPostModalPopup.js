@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import {v4 as uuid} from 'uuid';
+import { v4 as uuid } from "uuid";
 
 const PopUp = (props) => {
   // function that takes boolean as param to conditionally display popup
@@ -59,49 +59,53 @@ const PopUp = (props) => {
   const handleNewPostSubmit = (e) => {
     e.preventDefault();
 
-    const imageRef = ref(
-      storage,
-      `posts/${getAuth().currentUser.uid}/${e.target.children[3].value}`
-    );
-    uploadBytes(imageRef, selectedImageObj)
-      .then(() => {
-        alert("Image Uploaded!");
-        
-        getDownloadURL(imageRef)
-          .then((url) => {
-            const db = getFirestore();
-            const usersRef = doc(db, "users", getAuth().currentUser.email);
-            const newPostId = uuid();
-            updateDoc(usersRef, {
-              posts: arrayUnion({
-                image: url,
-                caption: e.target.children[3].value,
-                postId: newPostId,
-                comments: [],
-                likes: 0
-              }),
+    if (selectedImageObj) {
+      if (e.target.children[3].value !== "") {
+      const imageRef = ref(
+        storage,
+        `posts/${getAuth().currentUser.uid}/${e.target.children[3].value}`
+      );
+      uploadBytes(imageRef, selectedImageObj)
+        .then(() => {
+          alert("Image Uploaded!");
+
+          getDownloadURL(imageRef)
+            .then((url) => {
+              const db = getFirestore();
+              const usersRef = doc(db, "users", getAuth().currentUser.email);
+              const newPostId = uuid();
+              updateDoc(usersRef, {
+                posts: arrayUnion({
+                  image: url,
+                  caption: e.target.children[3].value,
+                  postId: newPostId,
+                  comments: [],
+                  likes: 0,
+                }),
+              });
+              setUserPosts([
+                ...userPosts,
+                {
+                  image: url,
+                  caption: e.target.children[3].value,
+                  postId: newPostId,
+                  comments: [],
+                  likes: 0,
+                },
+              ]);
+            })
+
+            .catch((err) => {
+              console.log(err);
             });
-            setUserPosts([
-              ...userPosts,
-              {
-                image: url,
-                caption: e.target.children[3].value,
-                postId: newPostId,
-                comments: [],
-                likes: 0
-              },
-            ]);
-          })
+        })
+        .catch((err) => {
+          console.log(err);
+        });
 
-          .catch((err) => {
-            console.log(err);
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    setUploadPostModal(false);
+      setUploadPostModal(false);
+      }
+    }
   };
 
   return (

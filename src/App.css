@@ -434,23 +434,27 @@ textarea {
 
 .individualPostContainer {
   width: 60%;
-  height: 100%;
+  height: 37rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 5rem;
 }
 .currentPost {
-  height: 32rem;
-  width: 32rem;
+  height: 36.8rem;
+  width: 35rem;
   object-fit: cover;
 }
 
 .rightSideComments {
-  height: 32rem;
+  height: 100%;
   width: 100%;
   display: grid;
   grid-template-rows: 0.5fr 1fr;
-  border: 1px solid black;
+  background-color: #fff;
+  padding-left: 1rem;
+  padding-right: 0.5rem;
+  box-shadow: 0 0 8px 2px rgb(182, 179, 179);
 }
 
 .individualComment {
@@ -530,3 +534,39 @@ textarea {
   font-weight: 700;
 }
 
+.commentInputAndSendButton {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.commentInputAndSendButton > input {
+  height: 1.3rem;
+  width: 100%;
+  border: none;
+  background-color: #fff;
+}
+
+input:focus {
+  outline: none;
+}
+
+.likesAndCommentsIcons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 3.5rem;
+  margin-bottom: 0.5rem;
+}
+.postLikeButton > svg {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.postCommentButton > svg {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.likesNumber {
+  margin-bottom: 0.5rem;
+}

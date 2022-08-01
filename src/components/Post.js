@@ -3,6 +3,8 @@ import { getAuth } from "firebase/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import CurrentPostComments from "./CurrentPostComments";
+import { AiOutlineSend } from "react-icons/ai";
+import { BsChat, BsHeart } from "react-icons/bs";
 
 const Post = (props) => {
   const { currentProfilePicture, setCurrentProfilePicture } = props;
@@ -10,6 +12,7 @@ const Post = (props) => {
   const [userFullUsernameOnPost, setUserFullUsernameOnPost] = useState();
   const [currentPostComments, setCurrentPostComments] = useState();
   const [currentPostCaption, setCurrentPostCaption] = useState();
+  const [currentPostLikes, setCurrentPostLikes] = useState()
   const [currentPostURL, setCurrentPostURL] = useState();
   const [loading, setLoading] = useState(true);
   const location = useLocation();
@@ -41,6 +44,7 @@ const Post = (props) => {
                 if (post.image === location.state.image) {
                   setCurrentPostCaption(post.caption);
                   setCurrentPostComments(post.comments);
+                  setCurrentPostLikes(post.likes)
                 }
               });
             }
@@ -87,15 +91,16 @@ const Post = (props) => {
           <div className="rightSideComments">
             <div className="posterNameAndCaption">
               <div className="imageAndName">
-                <div onClick={switchToProfile}>
-                {currentProfilePicture}
-                </div>
+                <div onClick={switchToProfile}>{currentProfilePicture}</div>
                 <div className="nameAndUsername">
                   <div className="userFullNameOnPost" onClick={switchToProfile}>
                     {userFullNameOnPost}
                   </div>
-                  <div className="userFullUsernameOnPost" onClick={switchToProfile}>
-                    @{userFullUsernameOnPost}
+                  <div
+                    className="userFullUsernameOnPost"
+                    onClick={switchToProfile}
+                  >
+                    {userFullUsernameOnPost}
                   </div>
                 </div>
               </div>
@@ -103,6 +108,22 @@ const Post = (props) => {
             </div>
             <div className="currentPostComments">
               <CurrentPostComments currentPostComments={currentPostComments} />
+            </div>
+            <div className="likesAndCommentsIcons">
+              <div className="postLikeButton">{<BsHeart />}</div>
+              <div className="postCommentButton">{<BsChat />}</div>
+            </div>
+            <div className="likesNumber">{currentPostLikes} likes</div>
+            <div className="commentInputAndSendButton">
+              <label htmlFor="commentOnPost"></label>
+              <input
+                type="text"
+                name="commentOnPost"
+                placeholder="Add a comment..."
+                minLength="1"
+                maxLength="30"
+              ></input>
+              <div>{<AiOutlineSend />}</div>
             </div>
           </div>
         </div>

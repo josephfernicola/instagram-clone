@@ -138,7 +138,6 @@ function NavBar(props) {
         fullName: doc.data().name,
       });
     });
-    console.log(searchMatches);
     let usernameMatches = searchMatches.filter((match) => {
       const regex = new RegExp(`^${e.target.value}`, "gi");
       return match.fullName.match(regex);
@@ -166,13 +165,14 @@ function NavBar(props) {
     );
 
     if (e.target.value === "") {
-      usernameMatches = [];
       searchMatches = [];
       setMatchList([]);
     }
+    if (usernameMatches.length === 0) {
+      setMatchList(<div>No Results</div>)
+    }
   };
   const switchToOtherProfile = async (e) => {
-    console.log("click" , e.target.parentElement.parentElement.children[1].textContent);
     const users = await getFirestore();
     const usersRef = await collection(users, "users");
     getDocs(usersRef)
@@ -183,7 +183,8 @@ function NavBar(props) {
         });
         users.forEach((user) => {
           if (
-            user.username === e.target.parentElement.parentElement.children[1].textContent
+            user.username ===
+            e.target.parentElement.parentElement.children[1].textContent
           ) {
             setMatchList([]);
             navigate(`/profile/${user.uid}`);

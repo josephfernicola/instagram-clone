@@ -206,7 +206,7 @@ function NavBar(props) {
               src={instagramLogo}
               alt="Instagram Logo"
             ></img>
-            <div className="instagramTitle">Instagram</div>
+            <div className="instagramTitle">Fakestagram</div>
           </div>
         </Link>
         <div className="searchInputAndResults">

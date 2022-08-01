@@ -412,6 +412,10 @@ textarea {
   width: 10rem;
 }
 
+.profilePostImage:hover {
+  cursor: pointer;
+}
+
 .profilePostContainer {
   border: 1px solid black;
   height: 100vh;
@@ -466,6 +470,9 @@ textarea {
 .imageAndName {
   display: flex;
   justify-content: center;
+}
+.imageAndName:hover {
+  cursor: pointer;
 }
 
 .nameAndUsername {
@@ -560,6 +567,12 @@ input:focus {
 .postLikeButton > svg {
   height: 1.5rem;
   width: 1.5rem;
+}
+.postLikeButton:hover, .postCommentButton:hover {
+  cursor: pointer;
+}
+.postLikeButton > svg:hover path{
+  fill: rgb(236, 77, 77);
 }
 
 .postCommentButton > svg {
